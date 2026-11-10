@@ -686,49 +686,25 @@ useEffect(() => {
 
   const isBlueTheme = theme === "blue";
 
-  const accentColor = isBlueTheme
-    ? isDark
-      ? "#91a8ef"
-      : "#1278e6"
-    : isDark
-      ? "#f08080"
-      : "#d93636";
+const accentColor = "#A66AE8";
 
-  const accentTextClass = isBlueTheme
-    ? isDark
-      ? "text-[#91a8ef]"
-      : "text-[#1278e6]"
-    : isDark
-      ? "text-[#f08080]"
-      : "text-[#d93636]";
+const accentTextClass = "text-[#A66AE8]";
 
-  const mutedTabTextClass = isDark
-    ? "text-white/45"
-    : isBlueTheme
-      ? "text-[#64748b]"
-      : "text-[#936565]";
+const mutedTabTextClass = isDark
+  ? "text-white/45"
+  : "text-[#88838D]";
 
-  const pageBackgroundClass = isDark
-    ? "bg-black"
-    : isBlueTheme
-      ? "bg-[#edf4ff]"
-      : "bg-[#fff1f1]";
+const pageBackgroundClass = isDark
+  ? "bg-[#050407]"
+  : "bg-[#F0B5BA]";
 
-  const chatListBackgroundClass = isDark
-    ? isBlueTheme
-      ? "bg-[#1D202E]"
-      : "bg-[#181818]"
-    : isBlueTheme
-      ? "bg-[#edf4ff]"
-      : "bg-[#fff1f1]";
+const chatListBackgroundClass = isDark
+  ? "bg-[#181818]"
+  : "bg-white";
 
-  const chatListBackgroundColor = isDark
-    ? isBlueTheme
-      ? "#1D202E"
-      : "#181818"
-    : isBlueTheme
-      ? "#edf4ff"
-      : "#fff1f1";
+const chatListBackgroundColor = isDark
+  ? "#181818"
+  : "#ffffff";
 
   const handleCategoryChange = (index) => {
   if (index === activeCategory2) {
@@ -2920,17 +2896,12 @@ const filteredChats = useMemo(() => {
                     isScrolled ? "opacity-0 translate-y-20" : "opacity-100"
                   }`}
                 >
-                  <div
-                    className={`w-[45px] h-[45px] rounded-full ${
-                      theme == "red"
-                        ? isDark
-                          ? "bg-red-800"
-                          : "bg-[#ec5454]"
-                        : isDark
-                          ? "bg-blue-500"
-                          : "bg-[#1278e6]"
-                    } text-white flex items-center justify-center`}
-                  >
+                 <div
+  className="w-[45px] h-[45px] rounded-full text-white flex items-center justify-center shadow-lg"
+  style={{
+    backgroundColor: accentColor,
+  }}
+>
                     <MessageCirclePlus />
                   </div>
                 </div>
@@ -3182,22 +3153,27 @@ const filteredChats = useMemo(() => {
 
           {/* Chat Content */}
           <div
-            className={`
-              order-2
-              h-screen
-              min-w-0
-              max-w-full
-              w-2/3
-              shrink-0
-              overflow-hidden
-              ${!activeB ? "hidden" : ""}
-              max-md:absolute
-              max-md:inset-x-0
-              max-md:z-[60]
-              max-md:w-full
-              max-md:basis-full
-            `}
-          >
+  className={`
+    order-2
+    h-screen
+    min-w-0
+    max-w-full
+    w-2/3
+    shrink-0
+    overflow-hidden
+    ${!activeB ? "hidden" : ""}
+    max-md:absolute
+    max-md:inset-x-0
+    max-md:z-[60]
+    max-md:w-full
+    max-md:basis-full
+  `}
+  style={{
+    background: isDark
+      ? "#050407"
+      : "linear-gradient(125deg, #E5A5B2 0%, #F3B28A 52%, #ECA2B5 100%)",
+  }}
+>
             <PanelsB
               language={language}
               selectedData={selectedData}
@@ -3267,162 +3243,247 @@ const filteredChats = useMemo(() => {
       </div>
 
       <style jsx global>{`
-        [data-app-theme="light"][data-app-color="blue"] {
-          --app-theme-page: #edf4ff;
-          --app-theme-panel: #dceaff;
-          --app-theme-text: #253651;
-          --app-theme-muted: #64748b;
-          --app-theme-accent: #1278e6;
-          --app-theme-surface: #c6dcf7;
-          --app-theme-nav: #dceaff;
-          --app-theme-hover: rgba(18, 120, 230, 0.11);
-          --app-theme-border: rgba(18, 120, 230, 0.18);
-        }
+  /* =====================================
+     TELEGRAPH - THEME SYSTEM
+  ===================================== */
 
-        [data-app-theme="light"][data-app-color="red"] {
-          --app-theme-page: #fff1f1;
-          --app-theme-panel: #ffe0e0;
-          --app-theme-text: #4b2929;
-          --app-theme-muted: #936565;
-          --app-theme-accent: #d93636;
-          --app-theme-surface: #f8cccc;
-          --app-theme-nav: #ffe0e0;
-          --app-theme-hover: rgba(217, 54, 54, 0.1);
-          --app-theme-border: rgba(217, 54, 54, 0.16);
-        }
+  [data-app-theme="dark"] {
+    --app-theme-page: #050407;
+    --app-theme-panel: #181818;
+    --app-theme-text: #f5f3f7;
+    --app-theme-muted: #89848e;
+    --app-theme-accent: #a66ae8;
+    --app-theme-surface: #282828;
+    --app-theme-nav: #181818;
+    --app-theme-hover: rgba(166, 106, 232, 0.13);
+    --app-theme-border: rgba(255, 255, 255, 0.07);
+  }
 
-        [data-app-theme="light"] .text-white {
-          color: var(--app-theme-text) !important;
-        }
+  [data-app-theme="light"] {
+    --app-theme-page: #f0b5ba;
+    --app-theme-panel: #ffffff;
+    --app-theme-text: #202020;
+    --app-theme-muted: #88838d;
+    --app-theme-accent: #9655cf;
+    --app-theme-surface: #f2f2f2;
+    --app-theme-nav: #ffffff;
+    --app-theme-hover: rgba(150, 85, 207, 0.10);
+    --app-theme-border: rgba(40, 30, 50, 0.08);
+  }
 
-        [data-app-theme="light"] [class*="text-white/70"],
-        [data-app-theme="light"] [class*="text-white/80"] {
-          color: var(--app-theme-accent) !important;
-        }
+  /* =====================================
+     MAIN BACKGROUNDS
+  ===================================== */
 
-        [data-app-theme="light"] [class*="text-white/45"],
-        [data-app-theme="light"] [class*="text-white/75"] {
-          color: var(--app-theme-muted) !important;
-        }
+  [data-app-theme="dark"] {
+    background-color: #050407;
+  }
 
-        [data-app-theme="light"] [class*="text-gray-300"],
-        [data-app-theme="light"] [class*="text-gray-400"],
-        [data-app-theme="light"] [class*="text-gray-500"] {
-          color: var(--app-theme-muted) !important;
-        }
+  [data-app-theme="light"] {
+    background-color: #f0b5ba;
+  }
 
-        [data-app-theme="light"] [class*="text-blue-300"] {
-          color: var(--app-theme-accent) !important;
-        }
+  /* =====================================
+     TEXT COLORS
+  ===================================== */
 
-        /* Keep white icons on their colored backgrounds. */
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-blue-400"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-blue-500"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-blue-600"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-red-400"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-red-800"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-yellow-400"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-green-400"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-green-500"],
-        [data-app-theme="light"]
-          [class*="text-white"][class*="bg-purple-400"],
-        [data-app-theme="light"]
-          [class*="text-white"][style*="background-color"] {
-          color: #ffffff !important;
-        }
+  [data-app-theme="light"] .text-white {
+    color: var(--app-theme-text) !important;
+  }
 
-        /* Settings and contact cards. */
-        [data-app-theme="light"] [class*="rounded-2xl"],
-        [data-app-theme="light"] [class*="rounded-[5px]"] {
-          background-color: var(--app-theme-panel) !important;
-          border-color: var(--app-theme-border);
-        }
+  [data-app-theme="light"] [class*="text-white/70"],
+  [data-app-theme="light"] [class*="text-white/80"],
+  [data-app-theme="light"] [class*="text-white/45"],
+  [data-app-theme="light"] [class*="text-white/75"] {
+    color: var(--app-theme-muted) !important;
+  }
 
-        /* Search fields. */
-        [data-app-theme="light"] [class*="bg-white/10"] {
-          background-color: var(--app-theme-surface) !important;
-        }
+  [data-app-theme="light"] [class*="text-gray-300"],
+  [data-app-theme="light"] [class*="text-gray-400"],
+  [data-app-theme="light"] [class*="text-gray-500"] {
+    color: var(--app-theme-muted) !important;
+  }
 
-        [data-app-theme="light"] input {
-          color: var(--app-theme-text) !important;
-        }
+  [data-app-theme="light"] [class*="text-blue-300"] {
+    color: var(--app-theme-accent) !important;
+  }
 
-        [data-app-theme="light"] input::placeholder {
-          color: var(--app-theme-muted) !important;
-          opacity: 1;
-        }
+  /* =====================================
+     ICONS ON COLORED BACKGROUNDS
+  ===================================== */
 
-        [data-app-theme="light"]
-          [class*="bg-white/10"]
-          span:has(svg) {
-          color: var(--app-theme-accent) !important;
-        }
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-blue-400"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-blue-500"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-blue-600"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-red-400"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-red-800"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-yellow-400"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-green-400"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-green-500"],
+  [data-app-theme="light"]
+    [class*="text-white"][class*="bg-purple-400"],
+  [data-app-theme="light"]
+    [class*="text-white"][style*="background-color"] {
+    color: #ffffff !important;
+  }
 
-        /* Navigation bars and category selectors. */
-        [data-app-theme="light"] [class*="backdrop-blur-xl"] {
-          background-color: var(--app-theme-nav) !important;
-          border-color: var(--app-theme-border) !important;
-        }
+  /* =====================================
+     LIGHT MODE - CARDS
+  ===================================== */
 
-        [data-app-theme="light"] [class*="bg-[#ffffff]/10"] {
-          background-color: var(--app-theme-hover) !important;
-        }
+  [data-app-theme="light"] [class*="rounded-2xl"],
+  [data-app-theme="light"] [class*="rounded-[5px]"] {
+    background-color: var(--app-theme-panel) !important;
+    border-color: var(--app-theme-border);
+  }
 
-        [data-app-theme="light"] [class*="bg-white/[0.08]"] {
-          background-color: var(--app-theme-hover) !important;
-        }
+  /* =====================================
+     DARK MODE - CARDS
+  ===================================== */
 
-        [data-app-theme="light"]
-          [class*="hover:bg-white/20"]:hover,
-        [data-app-theme="light"]
-          [class*="active:bg-white/20"]:active {
-          background-color: var(--app-theme-hover) !important;
-        }
+  [data-app-theme="dark"] [class*="bg-[#252525]"],
+  [data-app-theme="dark"] [class*="bg-[#282C3F]"],
+  [data-app-theme="dark"] [class*="bg-[#282c3f]"] {
+    background-color: #202020 !important;
+  }
 
-        /* Keep the profile header transparent in light mode. */
-        [data-app-theme="light"] [class*="bg-[#31364d]"] {
-          background-color: transparent !important;
-        }
+  /* =====================================
+     SEARCH INPUTS
+  ===================================== */
 
-        /* Make profile-menu icons clearly visible in light mode. */
-        [data-app-theme="light"]
-          [class*="rounded-[5px]"]
-          span:has(svg) {
-          color: var(--app-theme-accent);
-        }
+  [data-app-theme="light"] [class*="bg-white/10"] {
+    background-color: #f2f2f2 !important;
+  }
 
-        /* =========================================
-   Telegraph - Low Performance Mode
-   Scoped to this page only
-========================================= */
+  [data-app-theme="dark"] [class*="bg-white/10"] {
+    background-color: #282828 !important;
+  }
 
-[data-performance="low"] .backdrop-blur-md,
-[data-performance="low"] .backdrop-blur-xl,
-[data-performance="low"] .backdrop-blur-2xl,
-[data-performance="low"] .backdrop-saturate-150 {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
+  [data-app-theme] input {
+    color: var(--app-theme-text) !important;
+  }
 
-[data-performance="low"] [class*="transition-"] {
-  transition-duration: 1ms !important;
-}
+  [data-app-theme] input::placeholder {
+    color: var(--app-theme-muted) !important;
+    opacity: 1;
+  }
 
-/* Respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  [data-performance] [class*="transition-"] {
+  [data-app-theme] [class*="bg-white/10"] span:has(svg) {
+    color: var(--app-theme-muted) !important;
+  }
+
+  /* =====================================
+     NAVIGATION BARS
+  ===================================== */
+
+  [data-app-theme="light"] [class*="backdrop-blur-xl"] {
+    background-color: rgba(255, 255, 255, 0.94) !important;
+    border-color: var(--app-theme-border) !important;
+  }
+
+  [data-app-theme="dark"] [class*="backdrop-blur-xl"] {
+    background-color: rgba(24, 24, 24, 0.94) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* =====================================
+     CATEGORY INDICATORS
+  ===================================== */
+
+  [data-app-theme] [class*="bg-[#ffffff]/10"],
+  [data-app-theme] [class*="bg-blue-600/15"],
+  [data-app-theme] [class*="bg-[#1278e6]/10"],
+  [data-app-theme] [class*="bg-[#d93636]/10"] {
+    background-color: var(--app-theme-hover) !important;
+  }
+
+  [data-app-theme="light"] [class*="bg-white/[0.08]"],
+  [data-app-theme="light"] [class*="hover:bg-white/20"]:hover,
+  [data-app-theme="light"] [class*="active:bg-white/20"]:active {
+    background-color: var(--app-theme-hover) !important;
+  }
+
+  [data-app-theme="dark"] [class*="bg-white/[0.08]"],
+  [data-app-theme="dark"] [class*="hover:bg-white/20"]:hover,
+  [data-app-theme="dark"] [class*="active:bg-white/20"]:active {
+    background-color: var(--app-theme-hover) !important;
+  }
+
+  /* =====================================
+     SELECTION HEADER
+  ===================================== */
+
+  [data-selection-header] {
+    background-color: var(--app-theme-nav) !important;
+    border-color: var(--app-theme-border) !important;
+  }
+
+  /* =====================================
+     SELECTION MENU
+  ===================================== */
+
+  [data-app-theme="light"] [role="menu"] {
+    background-color: #ffffff !important;
+    border-color: var(--app-theme-border) !important;
+  }
+
+  [data-app-theme="dark"] [role="menu"] {
+    background-color: #242124 !important;
+    border-color: var(--app-theme-border) !important;
+  }
+
+  /* =====================================
+     PROFILE HEADER
+  ===================================== */
+
+  [data-app-theme="light"] [class*="bg-[#31364d]"] {
+    background-color: transparent !important;
+  }
+
+  /* =====================================
+     PROFILE MENU ICONS
+  ===================================== */
+
+  [data-app-theme="light"]
+    [class*="rounded-[5px]"]
+    span:has(svg) {
+    color: var(--app-theme-accent);
+  }
+
+  /* =====================================
+     LOW PERFORMANCE MODE
+  ===================================== */
+
+  [data-performance="low"] .backdrop-blur-md,
+  [data-performance="low"] .backdrop-blur-xl,
+  [data-performance="low"] .backdrop-blur-2xl,
+  [data-performance="low"] .backdrop-saturate-150 {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  [data-performance="low"] [class*="transition-"] {
     transition-duration: 1ms !important;
   }
-}
-      `}</style>
+
+  /* =====================================
+     REDUCED MOTION
+  ===================================== */
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-performance] [class*="transition-"] {
+      transition-duration: 1ms !important;
+    }
+  }
+`}</style>
     </div>
   );
 }
