@@ -1,0 +1,288 @@
+@import "tailwindcss";
+
+:root {
+  background-color: #31364d;
+}
+
+bo {
+  background-color: #57021c;
+}
+
+@font-face {
+  font-family: "YekanBakh";
+  src: url("/fonts/YekanBakh-Regular.woff2") format("woff2"),
+    url("/fonts/YekanBakh-Regular.woff") format("woff"),
+    url("/fonts/YekanBakh-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: "Regular";
+  src: url("/fonts/Regular.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+html,
+body {
+  font-family: "YekanBakh";
+}
+
+/* From Uiverse.io by vinodjangid07 */
+.Btn {
+  width: 300px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(
+    to right,
+    #77530a,
+    #ffd277,
+    #77530a,
+    #77530a,
+    #ffd277,
+    #77530a
+  );
+  background-size: 250%;
+  background-position: left;
+  color: #ffd277;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition-duration: 1s;
+  overflow: hidden;
+}
+
+.Btn::before {
+  position: absolute;
+  content: "شروع پیام‌‌‌‌‌‌‌‌‌رسانی‌";
+  color: #ffd277;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 97%;
+  height: 90%;
+  border-radius: 8px;
+  transition-duration: 1s;
+  background-color: rgba(0, 0, 0, 0.842);
+  background-size: 200%;
+}
+
+.Btn:hover {
+  background-position: right;
+  transition-duration: 1s;
+}
+
+.Btn:hover::before {
+  background-position: right;
+  transition-duration: 1s;
+}
+
+.Btn:active {
+  transform: scale(0.95);
+}
+
+@keyframes panelsAEnter {
+  from {
+    opacity: 0;
+    scale: 0.94;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes panelsAExit {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0;
+    scale: 0.94;
+  }
+}
+
+@keyframes panelsABackdropEnter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes panelsABackdropExit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.panels-a-enter {
+  animation: panelsAEnter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: center center;
+  will-change: opacity, scale;
+}
+
+.panels-a-exit {
+  animation: panelsAExit 240ms cubic-bezier(0.4, 0, 1, 1) both;
+  transform-origin: center center;
+  pointer-events: none;
+  will-change: opacity, scale;
+}
+
+.panels-a-backdrop-enter {
+  animation: panelsABackdropEnter 240ms ease-out both;
+}
+
+.panels-a-backdrop-exit {
+  animation: panelsABackdropExit 240ms ease-in both;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panels-a-enter,
+  .panels-a-exit,
+  .panels-a-backdrop-enter,
+  .panels-a-backdrop-exit {
+    animation-duration: 1ms;
+  }
+}
+
+
+
+/* ========================================
+   CHAT BACKGROUND — DARK BLUE
+======================================== */
+
+[data-app-theme="dark"][data-app-color="blue"] {
+  --app-chat-bottom: #1d202e;
+  --app-chat-middle: #172033;
+  --app-chat-top: #111522;
+  --app-chat-fade-middle: rgba(29, 32, 46, 0.7);
+
+  --app-message-menu-bg: #31374f;
+  --app-message-menu-border: rgba(255, 255, 255, 0.06);
+  --app-menu-hover: rgba(255, 255, 255, 0.06);
+  --app-menu-active: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   CHAT BACKGROUND — DARK RED
+======================================== */
+
+[data-app-theme="dark"][data-app-color="red"] {
+  --app-chat-bottom: #351313;
+  --app-chat-middle: #241719;
+  --app-chat-top: #111113;
+  --app-chat-fade-middle: rgba(53, 19, 19, 0.7);
+
+  --app-message-menu-bg: #302727;
+  --app-message-menu-border: rgba(255, 255, 255, 0.06);
+  --app-menu-hover: rgba(255, 255, 255, 0.06);
+  --app-menu-active: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   CHAT BACKGROUND — LIGHT BLUE
+======================================== */
+
+[data-app-theme="light"][data-app-color="blue"] {
+  --app-chat-bottom: #dceaff;
+  --app-chat-middle: #edf4ff;
+  --app-chat-top: #f7faff;
+  --app-chat-fade-middle: rgba(220, 234, 255, 0.65);
+
+  --app-message-menu-bg: #e4eeff;
+  --app-message-menu-border: rgba(18, 120, 230, 0.18);
+  --app-menu-hover: rgba(18, 120, 230, 0.09);
+  --app-menu-active: rgba(18, 120, 230, 0.14);
+}
+
+/* ========================================
+   CHAT BACKGROUND — LIGHT RED
+======================================== */
+
+[data-app-theme="light"][data-app-color="red"] {
+  --app-chat-bottom: #ffe0e0;
+  --app-chat-middle: #fff1f1;
+  --app-chat-top: #fff8f8;
+  --app-chat-fade-middle: rgba(255, 224, 224, 0.65);
+
+  --app-message-menu-bg: #ffe8e8;
+  --app-message-menu-border: rgba(217, 54, 54, 0.16);
+  --app-menu-hover: rgba(217, 54, 54, 0.08);
+  --app-menu-active: rgba(217, 54, 54, 0.13);
+}
+
+/* ========================================
+   THEMED CHAT BACKGROUND
+======================================== */
+
+[data-app-theme] .app-chat-background {
+  background-image: linear-gradient(
+    to top,
+    var(--app-chat-bottom),
+    var(--app-chat-middle),
+    var(--app-chat-top)
+  ) !important;
+}
+
+/* ========================================
+   THEMED CHAT BOTTOM FADE
+======================================== */
+
+[data-app-theme] .app-chat-fade {
+  background-image: linear-gradient(
+    to top,
+    var(--app-chat-bottom),
+    var(--app-chat-fade-middle),
+    transparent
+  ) !important;
+}
+
+/* ========================================
+   MESSAGE CONTEXT MENU
+======================================== */
+
+[data-app-theme] .message-context-menu {
+  background-color: var(--app-message-menu-bg) !important;
+  border-color: var(--app-message-menu-border) !important;
+}
+
+/* ========================================
+   MESSAGE MENU HOVER
+======================================== */
+
+[data-app-theme] .message-context-menu button:hover,
+[data-app-theme] .message-context-menu button:focus-visible {
+  background-color: var(--app-menu-hover) !important;
+}
+
+/* ========================================
+   MESSAGE MENU ACTIVE
+======================================== */
+
+[data-app-theme] .message-context-menu button:active {
+  background-color: var(--app-menu-active) !important;
+}
+
+
+
+
+
+  
+  

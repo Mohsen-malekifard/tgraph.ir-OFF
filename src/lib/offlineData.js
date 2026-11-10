@@ -1,0 +1,220 @@
+/*
+ * Temporary local fixtures used by the offline demo build.
+ * No fixture contains a remote avatar or media URL.
+ */
+export const OFFLINE_USER = {
+  id: "demo-user-self",
+  _id: "demo-user-self",
+  firstName: "کاربر",
+  lastName: "آزمایشی",
+  username: "offline_user",
+  phone: "+98 900 000 0000",
+  bio: "حساب نمایشی نسخه آفلاین",
+  avatar: null,
+  isOnline: true,
+  lastSeen: null,
+};
+
+export const OFFLINE_CONTACTS = [
+  {
+    id: "demo-contact-1",
+    _id: "demo-contact-1",
+    firstName: "آرمان",
+    lastName: "رضایی",
+    username: "arman_rezaei",
+    phone: "+98 912 111 2233",
+    avatar: null,
+    isOnline: true,
+  },
+  {
+    id: "demo-contact-2",
+    _id: "demo-contact-2",
+    firstName: "نگار",
+    lastName: "محمدی",
+    username: "negar_m",
+    phone: "+98 913 222 3344",
+    avatar: null,
+    isOnline: false,
+  },
+  {
+    id: "demo-contact-3",
+    _id: "demo-contact-3",
+    firstName: "پارسا",
+    lastName: "احمدی",
+    username: "parsa_dev",
+    phone: "+98 914 333 4455",
+    avatar: null,
+    isOnline: true,
+  },
+  {
+    id: "demo-contact-4",
+    _id: "demo-contact-4",
+    firstName: "سارا",
+    lastName: "کریمی",
+    username: "sara_k",
+    phone: "+98 915 444 5566",
+    avatar: null,
+    isOnline: false,
+  },
+];
+
+const lastMessage = (text, minutesAgo = 5) => ({
+  _id: `demo-last-${minutesAgo}`,
+  type: "text",
+  text,
+  sender: "demo-contact-1",
+  createdAt: `2026-11-07T${String(18 - Math.floor(minutesAgo / 60)).padStart(2, "0")}:${String(59 - (minutesAgo % 60)).padStart(2, "0")}:00.000Z`,
+});
+
+export const OFFLINE_CONVERSATIONS = [
+  {
+    conversation: {
+      _id: "demo-conversation-private-1",
+      id: "demo-conversation-private-1",
+      type: "private",
+      title: "",
+      username: "arman_rezaei",
+      description: "گفتگوی آزمایشی آفلاین",
+      isPublic: false,
+      avatar: null,
+      lastMessage: lastMessage("سلام! حالت چطوره؟", 4),
+      lastMessageAt: "2026-11-07T18:55:00.000Z",
+      updatedAt: "2026-11-07T18:55:00.000Z",
+    },
+    peer: OFFLINE_CONTACTS[0],
+    membershipId: "demo-membership-private-1",
+    membership: { role: "member", isMuted: false },
+    unreadCount: 2,
+  },
+  {
+    conversation: {
+      _id: "demo-conversation-group-1",
+      id: "demo-conversation-group-1",
+      type: "group",
+      title: "گروه برنامه‌نویسان",
+      username: "",
+      description: "گفتگو درباره برنامه‌نویسی و توسعه نرم‌افزار",
+      isPublic: false,
+      avatar: null,
+      lastMessage: {
+        _id: "demo-last-group",
+        type: "text",
+        text: "نسخه آفلاین آماده است.",
+        sender: "demo-user-self",
+        createdAt: "2026-11-07T18:40:00.000Z",
+      },
+      lastMessageAt: "2026-11-07T18:40:00.000Z",
+      updatedAt: "2026-11-07T18:40:00.000Z",
+    },
+    peer: null,
+    membershipId: "demo-membership-group-1",
+    membership: { role: "owner", isMuted: false },
+    unreadCount: 0,
+  },
+  {
+    conversation: {
+      _id: "demo-conversation-channel-1",
+      id: "demo-conversation-channel-1",
+      type: "channel",
+      title: "کانال آموزش برنامه‌نویسی",
+      username: "offline_programming",
+      description: "مطالب و نکته‌های آموزشی نمایشی",
+      isPublic: true,
+      avatar: null,
+      lastMessage: {
+        _id: "demo-last-channel",
+        type: "text",
+        text: "به کانال آزمایشی خوش آمدید.",
+        sender: "demo-user-self",
+        createdAt: "2026-11-07T17:30:00.000Z",
+      },
+      lastMessageAt: "2026-11-07T17:30:00.000Z",
+      updatedAt: "2026-11-07T17:30:00.000Z",
+    },
+    peer: null,
+    membershipId: "demo-membership-channel-1",
+    membership: { role: "admin", isMuted: false },
+    unreadCount: 0,
+  },
+  {
+    conversation: {
+      _id: "demo-conversation-private-2",
+      id: "demo-conversation-private-2",
+      type: "private",
+      title: "",
+      username: "negar_m",
+      description: "گفتگوی آزمایشی آفلاین",
+      isPublic: false,
+      avatar: null,
+      lastMessage: {
+        _id: "demo-last-negar",
+        type: "text",
+        text: "بعداً صحبت می‌کنیم.",
+        sender: "demo-contact-2",
+        createdAt: "2026-11-07T16:15:00.000Z",
+      },
+      lastMessageAt: "2026-11-07T16:15:00.000Z",
+      updatedAt: "2026-11-07T16:15:00.000Z",
+    },
+    peer: OFFLINE_CONTACTS[1],
+    membershipId: "demo-membership-private-2",
+    membership: { role: "member", isMuted: false },
+    unreadCount: 0,
+  },
+];
+
+export const OFFLINE_MESSAGES = [
+  {
+    _id: "demo-message-1",
+    type: "text",
+    text: "سلام! به گفتگوی آزمایشی خوش اومدی 👋",
+    sender: "demo-contact-1",
+    createdAt: "2026-11-07T14:31:00.000Z",
+    visible: true,
+    sendStatus: "sent",
+    reactions: [],
+  },
+  {
+    _id: "demo-message-2",
+    type: "text",
+    text: "سلام، ممنون! این نسخه به سرور متصل نیست.",
+    sender: "demo-user-self",
+    createdAt: "2026-11-07T14:32:00.000Z",
+    visible: true,
+    sendStatus: "sent",
+    reactions: [],
+  },
+  {
+    _id: "demo-message-3",
+    type: "text",
+    text: "پیام‌های این گفتگو صرفاً داده‌های ثابت نمایشی هستند.",
+    sender: "demo-contact-1",
+    createdAt: "2026-11-07T14:33:00.000Z",
+    visible: true,
+    sendStatus: "sent",
+    reactions: [],
+  },
+  {
+    _id: "demo-message-4",
+    type: "text",
+    text: "همه پیام‌ها از یک آرایه محلی بارگذاری می‌شوند.",
+    sender: "demo-user-self",
+    createdAt: "2026-11-07T14:34:00.000Z",
+    visible: true,
+    sendStatus: "sent",
+    reactions: [],
+  },
+];
+
+export function getOfflineMessages(conversationId) {
+  return OFFLINE_MESSAGES.map((message) => ({
+    ...message,
+    conversation: String(conversationId || ""),
+    sender:
+      message.sender === "demo-contact-1"
+        ? (OFFLINE_CONVERSATIONS.find((item) =>
+            String(item?.conversation?._id ?? item?.conversation?.id ?? "") === String(conversationId || "")
+          )?.peer?.id || "demo-contact-1")
+        : message.sender,
+  }));
+}
