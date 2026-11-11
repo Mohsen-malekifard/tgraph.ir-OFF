@@ -1,6 +1,11 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const ThemeContext = createContext();
 
@@ -8,9 +13,31 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState("red");
   const [isDark, setIsDark] = useState(true);
 
+  // Background colors
+  const back = isDark
+    ? {
+        1: "bg-[#171717]",
+        2: "bg-[#303030]",
+      }
+    : {
+        1: "bg-[#ffffff]",
+        2: "bg-[#cfcccc]",
+      };
+
+  // Foreground color
+  const fore =
+    theme === "red"
+      ? "bg-[#d63333]"
+      : "bg-[#336fd6]";
+
   useEffect(() => {
-    const storedTheme = localStorage.getItem("chat_color_theme");
-    const storedDayMode = localStorage.getItem("chat_day_mode");
+    const storedTheme = localStorage.getItem(
+      "chat_color_theme"
+    );
+
+    const storedDayMode = localStorage.getItem(
+      "chat_day_mode"
+    );
 
     const parsedTheme = Number(storedTheme);
 
@@ -24,9 +51,12 @@ export function ThemeProvider({ children }) {
       parsedTheme <= 4
     ) {
       nextTheme =
-        parsedTheme === 1 || parsedTheme === 3 ? "blue" : "red";
+        parsedTheme === 1 || parsedTheme === 3
+          ? "blue"
+          : "red";
 
-      nextIsDark = parsedTheme === 1 || parsedTheme === 2;
+      nextIsDark =
+        parsedTheme === 1 || parsedTheme === 2;
     }
 
     if (storedDayMode !== null) {
@@ -44,6 +74,8 @@ export function ThemeProvider({ children }) {
         setTheme,
         isDark,
         setIsDark,
+        back,
+        fore,
       }}
     >
       {children}

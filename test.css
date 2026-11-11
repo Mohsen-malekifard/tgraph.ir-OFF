@@ -1,0 +1,25 @@
+body{
+    background-color:#050407, #A66AE8,#A66AE8, #88838D, #050407, #F0B5BA, #181818, #303030, #545353;
+}
+
+  const isBlueTheme = theme === "blue";
+
+const accentColor = "#A66AE8";
+
+const accentTextClass = "text-[#A66AE8]";
+
+const mutedTabTextClass = isDark
+  ? "text-white/45"
+  : "text-[#88838D]";
+
+const pageBackgroundClass = isDark
+  ? "bg-[#050407]"
+  : "bg-[#F0B5BA]";
+
+const chatListBackgroundClass = isDark
+  ? "bg-[#181818]"
+  : "bg-white";
+
+const chatListBackgroundColor = isDark
+  ? "#181818"
+  : "#ffffff";

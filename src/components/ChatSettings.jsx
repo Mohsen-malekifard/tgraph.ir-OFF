@@ -1,19 +1,21 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 
 import {
-  ArrowRight,
-  ArrowLeft,
   X,
   LogOut,
   EllipsisVertical,
   SunMedium,
   Paintbrush,
 } from "lucide-react";
-import { useData } from "@/context/DataContext";
+
+import { useTheme as useAppTheme } from "@/context/ThemeContext";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
+
 import Gap from "./Gap";
 
 export default function ChatSettings({
@@ -24,7 +26,7 @@ export default function ChatSettings({
   setIsDark,
   language,
 }) {
-  const { name } = useData();
+  const { back } = useAppTheme();
 
   const [divide, setDevide] = useState(16);
   const [divide2, setDevide2] = useState(15);
@@ -42,6 +44,26 @@ export default function ChatSettings({
   const MIN_CORNER_SIZE = 10;
   const MAX_CORNER_SIZE = 20;
   const CORNER_SIZE_STORAGE_KEY = "chat_message_corner_size";
+
+  /*
+  |--------------------------------------------------------------------------
+  | Theme Colors
+  |--------------------------------------------------------------------------
+  */
+
+  const pageBackgroundColor =
+    back[1];
+
+  const panelBackgroundColor =
+    back[2];
+
+  const dividerBackgroundColor = isDark
+    ? "rgba(255,255,255,0.09)"
+    : "rgba(0,0,0,0.10)";
+
+  const headerTextClass = isDark
+    ? "text-white"
+    : "text-[#252525]";
 
   const isBlueTheme = theme === "blue";
 
@@ -61,39 +83,15 @@ export default function ChatSettings({
       ? "text-[#f08080]"
       : "text-[#d93636]";
 
-  const panelBackgroundClass = isBlueTheme
-    ? isDark
-      ? "bg-[#282C3F]"
-      : "bg-[#dceaff]"
-    : isDark
-      ? "bg-[#252525]"
-      : "bg-[#ffe0e0]";
+  const menuTextClass = isDark
+    ? "text-white"
+    : "text-[#252525]";
 
-  const headerBackgroundClass = isBlueTheme
-    ? isDark
-      ? "bg-[#1d202e]"
-      : "bg-[#eaf3ff] text-white"
-    : isDark
-      ? "bg-[#181818]"
-      : "bg-[#fff1f1] text-white";
-
-  const menuBackgroundClass = isBlueTheme
-    ? isDark
-      ? "bg-[#31374F]"
-      : "bg-[#e4eeff]"
-    : isDark
-      ? "bg-[#302727]"
-      : "bg-[#ffe8e8]";
-
-  const dividerBackgroundClass = isBlueTheme
-    ? isDark
-      ? "bg-[#303346]"
-      : "bg-[#b8cfee]"
-    : isDark
-      ? "bg-[#3a3030]"
-      : "bg-[#efbcbc]";
-
-  const menuTextClass = isDark ? "text-white" : "text-[#252525]";
+  /*
+  |--------------------------------------------------------------------------
+  | Theme Options
+  |--------------------------------------------------------------------------
+  */
 
   const themes = [
     {
@@ -134,8 +132,16 @@ export default function ChatSettings({
     },
   ];
 
+  /*
+  |--------------------------------------------------------------------------
+  | Restore Settings
+  |--------------------------------------------------------------------------
+  */
+
   useEffect(() => {
-    const savedTextSize = localStorage.getItem(TEXT_SIZE_STORAGE_KEY);
+    const savedTextSize = localStorage.getItem(
+      TEXT_SIZE_STORAGE_KEY
+    );
 
     if (savedTextSize !== null) {
       const parsedTextSize = Number(savedTextSize);
@@ -149,7 +155,9 @@ export default function ChatSettings({
       }
     }
 
-    const savedCornerSize = localStorage.getItem(CORNER_SIZE_STORAGE_KEY);
+    const savedCornerSize = localStorage.getItem(
+      CORNER_SIZE_STORAGE_KEY
+    );
 
     if (savedCornerSize !== null) {
       const parsedCornerSize = Number(savedCornerSize);
@@ -163,7 +171,10 @@ export default function ChatSettings({
       }
     }
 
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    const savedTheme = localStorage.getItem(
+      THEME_STORAGE_KEY
+    );
+
     const parsedTheme = Number(savedTheme);
 
     let nextTheme = theme === "blue" ? "blue" : "red";
@@ -187,12 +198,17 @@ export default function ChatSettings({
       nextThemeId = parsedTheme;
 
       nextTheme =
-        parsedTheme === 1 || parsedTheme === 3 ? "blue" : "red";
+        parsedTheme === 1 || parsedTheme === 3
+          ? "blue"
+          : "red";
 
-      nextIsDark = parsedTheme === 1 || parsedTheme === 2;
+      nextIsDark =
+        parsedTheme === 1 || parsedTheme === 2;
     }
 
-    const savedDayMode = localStorage.getItem(DAY_MODE_STORAGE_KEY);
+    const savedDayMode = localStorage.getItem(
+      DAY_MODE_STORAGE_KEY
+    );
 
     if (savedDayMode !== null) {
       nextIsDark = savedDayMode !== "true";
@@ -212,50 +228,112 @@ export default function ChatSettings({
     setIsDark(nextIsDark);
     setIsDayMode(!nextIsDark);
 
-    localStorage.setItem(THEME_STORAGE_KEY, String(nextThemeId));
-    localStorage.setItem(DAY_MODE_STORAGE_KEY, String(!nextIsDark));
+    localStorage.setItem(
+      THEME_STORAGE_KEY,
+      String(nextThemeId)
+    );
+
+    localStorage.setItem(
+      DAY_MODE_STORAGE_KEY,
+      String(!nextIsDark)
+    );
   }, []);
 
+  /*
+  |--------------------------------------------------------------------------
+  | Slider Values
+  |--------------------------------------------------------------------------
+  */
+
   const sliderPercent =
-    ((divide - MIN_TEXT_SIZE) / (MAX_TEXT_SIZE - MIN_TEXT_SIZE)) * 100;
+    ((divide - MIN_TEXT_SIZE) /
+      (MAX_TEXT_SIZE - MIN_TEXT_SIZE)) *
+    100;
 
   const sliderPercent2 =
-    ((divide2 - MIN_CORNER_SIZE) / (MAX_CORNER_SIZE - MIN_CORNER_SIZE)) *
+    ((divide2 - MIN_CORNER_SIZE) /
+      (MAX_CORNER_SIZE - MIN_CORNER_SIZE)) *
     100;
+
+  /*
+  |--------------------------------------------------------------------------
+  | Text Size
+  |--------------------------------------------------------------------------
+  */
 
   const handleTextSizeChange = (e) => {
     const newSize = Number(e.target.value);
 
     setDevide(newSize);
-    localStorage.setItem(TEXT_SIZE_STORAGE_KEY, String(newSize));
+
+    localStorage.setItem(
+      TEXT_SIZE_STORAGE_KEY,
+      String(newSize)
+    );
   };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Message Corner Size
+  |--------------------------------------------------------------------------
+  */
 
   const handleCornerSizeChange = (e) => {
     const newSize = Number(e.target.value);
 
     setDevide2(newSize);
-    localStorage.setItem(CORNER_SIZE_STORAGE_KEY, String(newSize));
+
+    localStorage.setItem(
+      CORNER_SIZE_STORAGE_KEY,
+      String(newSize)
+    );
   };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Scroll
+  |--------------------------------------------------------------------------
+  */
 
   const handleScroll = (e) => {
     setIsScrolled(e.currentTarget.scrollTop > 10);
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Change Theme
+  |--------------------------------------------------------------------------
+  */
+
   const handleThemeChange = (themeId) => {
-    const selectedColor = [1, 3].includes(themeId) ? "blue" : "red";
-    const selectedDarkMode = themeId === 1 || themeId === 2;
+    const selectedColor = [1, 3].includes(themeId)
+      ? "blue"
+      : "red";
+
+    const selectedDarkMode =
+      themeId === 1 || themeId === 2;
 
     setSelectedTheme(themeId);
     setTheme(selectedColor);
     setIsDark(selectedDarkMode);
     setIsDayMode(!selectedDarkMode);
 
-    localStorage.setItem(THEME_STORAGE_KEY, String(themeId));
+    localStorage.setItem(
+      THEME_STORAGE_KEY,
+      String(themeId)
+    );
+
     localStorage.setItem(
       DAY_MODE_STORAGE_KEY,
       String(!selectedDarkMode)
     );
   };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Day / Night Mode
+  |--------------------------------------------------------------------------
+  */
 
   const handleDayMode = () => {
     const nextIsDark = !isDark;
@@ -273,18 +351,29 @@ export default function ChatSettings({
     setIsDayMode(!nextIsDark);
     setSelectedTheme(nextThemeId);
 
-    localStorage.setItem(THEME_STORAGE_KEY, String(nextThemeId));
+    localStorage.setItem(
+      THEME_STORAGE_KEY,
+      String(nextThemeId)
+    );
+
     localStorage.setItem(
       DAY_MODE_STORAGE_KEY,
       String(!nextIsDark)
     );
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Render
+  |--------------------------------------------------------------------------
+  */
+
   return (
     <div
       onScroll={handleScroll}
-      className="
+      className={`
         relative
+        ${pageBackgroundColor}
         h-screen
         w-full
         min-w-0
@@ -293,9 +382,12 @@ export default function ChatSettings({
         overflow-y-auto
         overscroll-contain
         pb-[200px]
-      "
+        transition-colors
+        duration-200
+      `}
     >
       {/* Overlay */}
+
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
@@ -304,12 +396,14 @@ export default function ChatSettings({
       )}
 
       {/* Menu */}
+
       <div
-        className={`fixed ${
+  
+        className={`${panelBackgroundColor} fixed ${
           language == "english"
             ? "right-[20px] origin-top-right"
             : "left-[20px] origin-top-left"
-        } top-[62px] z-[50] flex w-[200px] flex-col gap-[25px] rounded-[5px] ${menuBackgroundClass} px-[12.5px] py-[12.5px] shadow-lg ring-1 ring-black/[0.06] transition-all duration-200 ease-out ${
+        } top-[62px] z-[50] flex w-[200px] flex-col gap-[25px] rounded-[5px] px-[12.5px] py-[12.5px] shadow-lg ring-1 ring-black/[0.06] transition-all duration-200 ease-out ${
           isOpen
             ? "pointer-events-auto translate-x-0 translate-y-0 scale-100 opacity-100"
             : "pointer-events-none translate-x-[-10px] translate-y-[10px] scale-0 opacity-0"
@@ -328,15 +422,20 @@ export default function ChatSettings({
       </div>
 
       {/* Header */}
+
       <div
-        className={`sticky top-0 z-[30] flex ${
-          language == "english" ? "flex-row" : "flex-row-reverse"
-        } px-[15px] w-full h-[54px] items-center justify-between ${headerBackgroundClass} transition-colors duration-200`}
+        className={`${pageBackgroundColor} sticky top-0 z-[30] flex ${
+          language == "english"
+            ? "flex-row"
+            : "flex-row-reverse"
+        } px-[15px] w-full h-[54px] items-center justify-between ${headerTextClass} transition-colors duration-200`}
       >
         <div
           className={`flex ${
-            language == "english" ? "flex-row" : "flex-row-reverse"
-          } items-center gap-[30px] text-white`}
+            language == "english"
+              ? "flex-row"
+              : "flex-row-reverse"
+          } items-center gap-[30px] ${headerTextClass}`}
         >
           <button
             type="button"
@@ -346,7 +445,7 @@ export default function ChatSettings({
           >
             <X />
           </button>
-          
+
           {language == "english" ? (
             <span className="text-center text-[17px] font-semibold tracking-wider">
               Chat Settings
@@ -362,18 +461,21 @@ export default function ChatSettings({
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           aria-label="More options"
-          className="text-white"
+          className={headerTextClass}
         >
           <EllipsisVertical />
         </button>
       </div>
 
       {/* Settings Content */}
+
       <div className="relative mt-[6px] w-full px-[15px] pb-[15px]">
         <div className="w-full overflow-hidden rounded-[15px]">
-          {/* Message text size */}
+          {/* Message Text Size */}
+
           <div
-            className={`h-[98px] w-full ${panelBackgroundClass} px-[20px] pt-[15px] transition-colors duration-200`}
+            
+            className={`h-[98px] w-full px-[20px] pt-[15px] transition-colors duration-200 ${panelBackgroundColor}`}
           >
             {language == "english" ? (
               <div
@@ -392,6 +494,7 @@ export default function ChatSettings({
             <div className="mt-[22px] flex items-center gap-[14px]">
               <div className="relative h-[18px] min-w-0 flex-1">
                 {/* Track */}
+
                 <div
                   className="
                     pointer-events-none
@@ -407,6 +510,7 @@ export default function ChatSettings({
                 />
 
                 {/* Active Track */}
+
                 <div
                   className="
                     pointer-events-none
@@ -424,6 +528,7 @@ export default function ChatSettings({
                 />
 
                 {/* Range */}
+
                 <input
                   type="range"
                   min={MIN_TEXT_SIZE}
@@ -486,7 +591,13 @@ export default function ChatSettings({
           </div>
 
           {/* Message Preview */}
-          <div className="h-auto w-full overflow-hidden bg-black px-[7px] py-[14px] scrollbar-none">
+
+          <div
+            style={{
+              backgroundColor: pageBackgroundColor,
+            }}
+            className="h-auto w-full overflow-hidden px-[7px] py-[14px] scrollbar-none"
+          >
             {language == "english" ? (
               <div className="flex h-full flex-col gap-[12px]">
                 <Gap
@@ -499,7 +610,9 @@ export default function ChatSettings({
                   bubbleClassName="max-w-[calc(100%_-_18px)]"
                 >
                   <div className="text-[#7bd46b]">
-                    <span className="font-semibold">Mohsen Dev</span>
+                    <span className="font-semibold">
+                      Mohsen Dev
+                    </span>
                   </div>
 
                   <div>Good morning!</div>
@@ -532,12 +645,18 @@ export default function ChatSettings({
                   bubbleClassName="max-w-[calc(100%_-_18px)]"
                 >
                   <div className="text-[#7bd46b]">
-                    <span className="font-semibold">Mohsen Dev</span>
+                    <span className="font-semibold">
+                      Mohsen Dev
+                    </span>
                   </div>
 
-                  <div className="text-right">صبح بخیر!</div>
+                  <div className="text-right">
+                    صبح بخیر!
+                  </div>
 
-                  <div className="text-right">میدونی ساعت چنده؟</div>
+                  <div className="text-right">
+                    میدونی ساعت چنده؟
+                  </div>
                 </Gap>
 
                 <Gap
@@ -556,10 +675,11 @@ export default function ChatSettings({
             )}
           </div>
 
-          {/* Wallpaper / Name color */}
+          {/* Wallpaper / Name Color */}
+
           <div
-            className={`h-[52px] w-full ${panelBackgroundClass} px-[20px] transition-colors duration-200`}
-          >
+            
+            className={`${panelBackgroundColor} h-[52px] w-full px-[20px] transition-colors duration-200`}>
             {language == "english" ? (
               <div className="flex h-[52px] items-center">
                 <div className="flex w-[43px] justify-start">
@@ -597,56 +717,28 @@ export default function ChatSettings({
             )}
 
             {language == "english" ? (
-              <div className={`ml-[43px] h-px ${dividerBackgroundClass}`} />
+              <div
+                className="ml-[43px] h-px"
+                style={{
+                  backgroundColor: dividerBackgroundColor,
+                }}
+              />
             ) : (
-              <div className={`mr-[43px] h-px ${dividerBackgroundClass}`} />
+              <div
+                className="mr-[43px] h-px"
+                style={{
+                  backgroundColor: dividerBackgroundColor,
+                }}
+              />
             )}
-
-            {/* {language == "english" ? (
-              <div className="flex h-[51px] items-center">
-                <div className="flex w-[43px] justify-start">
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    className="text-[21px] text-[#91a8ef]"
-                  />
-                </div>
-
-                <div className="flex flex-1 items-center justify-between">
-                  <span className="text-[15.5px] font-medium text-[#91a8ef]">
-                    Change Name Color
-                  </span>
-
-                  <span className="mr-[1px] rounded-full bg-[#2a3b31] px-[10px] py-[3px] text-[13px] font-semibold text-[#77c66c]">
-                    {name || "Mohsen"}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-row-reverse h-[51px] items-center">
-                <div className="flex flex-row-reverse w-[43px] justify-start">
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    className="text-[21px] text-[#91a8ef]"
-                  />
-                </div>
-
-                <div className="flex flex-1 items-center flex-row-reverse justify-between">
-                  <span className="text-[15.5px] text-right font-medium text-[#91a8ef]">
-                    تغییر رنگ نام
-                  </span>
-
-                  <span className="mr-[1px] rounded-full bg-[#2a3b31] px-[10px] py-[3px] text-[13px] font-semibold text-[#77c66c]">
-                    {name || "Mohsen"}
-                  </span>
-                </div>
-              </div>
-            )} */}
           </div>
         </div>
 
         {/* Color Theme */}
+
         <div
-          className={`mt-[14px] w-full overflow-hidden rounded-[15px] ${panelBackgroundClass} transition-colors duration-200`}
+          
+          className={`${panelBackgroundColor} mt-[14px] w-full overflow-hidden rounded-[15px] transition-colors duration-200`}
         >
           <div className="px-[20px] pt-[17px]">
             {language == "english" ? (
@@ -665,17 +757,22 @@ export default function ChatSettings({
           </div>
 
           {/* Theme List */}
+
           <div className="mt-[23px] w-full overflow-x-auto px-[20px] scrollbar-none">
             <div className="flex min-w-max gap-[11px] pb-[3px]">
               {themes.map((themeOption) => {
-                const isSelected = selectedTheme === themeOption.id;
+                const isSelected =
+                  selectedTheme === themeOption.id;
 
                 return (
                   <div key={themeOption.id}>
-                    {themeOption.isDark === true && isDark === true ? (
+                    {themeOption.isDark === true &&
+                    isDark === true ? (
                       <button
                         type="button"
-                        onClick={() => handleThemeChange(themeOption.id)}
+                        onClick={() =>
+                          handleThemeChange(themeOption.id)
+                        }
                         aria-label={`Theme ${themeOption.id}`}
                         style={
                           isSelected
@@ -695,18 +792,22 @@ export default function ChatSettings({
                           }}
                         >
                           {/* Pattern */}
+
                           <div
                             className="absolute inset-0 opacity-50"
                             style={{
-                              backgroundImage: themeOption.pattern,
+                              backgroundImage:
+                                themeOption.pattern,
                               backgroundSize: "20px 20px",
                             }}
                           />
 
-                          {/* Soft overlay */}
+                          {/* Soft Overlay */}
+
                           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.08] via-transparent to-black/20" />
 
                           {/* Header */}
+
                           <div className="absolute left-0 right-0 top-0 flex h-[24px] items-center justify-between px-[7px]">
                             <div className="flex items-center gap-[3px]">
                               <span className="h-[3px] w-[3px] rounded-full bg-white/45" />
@@ -717,39 +818,46 @@ export default function ChatSettings({
                             <div className="h-[4px] w-[20px] rounded-full bg-white/15" />
                           </div>
 
-                          {/* Left message */}
+                          {/* Left Message */}
+
                           <div
                             className="absolute left-[7px] top-[43px] rounded-[7px] rounded-tl-[3px] px-[7px] py-[4px] shadow-[0_3px_8px_rgba(0,0,0,.12)]"
                             style={{
-                              backgroundColor: themeOption.second,
+                              backgroundColor:
+                                themeOption.second,
                             }}
                           >
                             <div className="h-[3px] w-[26px] rounded-full bg-white/35" />
                             <div className="mt-[3px] h-[3px] w-[18px] rounded-full bg-white/20" />
                           </div>
 
-                          {/* Right message */}
+                          {/* Right Message */}
+
                           <div
                             className="absolute right-[7px] top-[31px] rounded-[7px] rounded-tr-[3px] px-[7px] py-[5px] shadow-[0_3px_8px_rgba(0,0,0,.14)]"
                             style={{
-                              backgroundColor: themeOption.accent,
+                              backgroundColor:
+                                themeOption.accent,
                             }}
                           >
                             <div className="h-[3px] w-[25px] rounded-full bg-white/65" />
                             <div className="mt-[3px] h-[3px] w-[16px] rounded-full bg-white/35" />
                           </div>
 
-                          {/* Small right message */}
+                          {/* Small Right Message */}
+
                           <div
                             className="absolute right-[8px] top-[62px] rounded-[6px] rounded-tr-[2px] px-[6px] py-[4px]"
                             style={{
-                              backgroundColor: themeOption.second,
+                              backgroundColor:
+                                themeOption.second,
                             }}
                           >
                             <div className="h-[3px] w-[16px] rounded-full bg-white/20" />
                           </div>
 
-                          {/* Bottom emoji badge */}
+                          {/* Bottom Badge */}
+
                           {themeOption.id === 1 ? (
                             <div className="absolute bottom-[8px] left-1/2 flex h-[31px] w-[31px] -translate-x-1/2 rounded-full bg-radial-[at_50%_75%] rotate-180 from-[#092188]/30 via-[#092188]/80 to-[#092188] to-90%" />
                           ) : (
@@ -759,23 +867,30 @@ export default function ChatSettings({
                           )}
 
                           {/* Selected */}
+
                           {isSelected && (
                             <div
-                              style={{ backgroundColor: accentColor }}
+                              style={{
+                                backgroundColor: accentColor,
+                              }}
                               className="absolute right-[6px] top-[6px] flex h-[19px] w-[19px] items-center justify-center rounded-full border border-white/30 text-[11px] font-bold text-[#151824] shadow-[0_3px_10px_rgba(0,0,0,.3)]"
                             >
                               ✓
                             </div>
                           )}
 
-                          {/* Hover highlight */}
+                          {/* Hover Highlight */}
+
                           <div className="pointer-events-none absolute inset-0 rounded-[10px] bg-white opacity-0 transition-opacity duration-200 group-hover:opacity-[0.045]" />
                         </div>
                       </button>
-                    ) : themeOption.isDark === false && isDark === false ? (
+                    ) : themeOption.isDark === false &&
+                      isDark === false ? (
                       <button
                         type="button"
-                        onClick={() => handleThemeChange(themeOption.id)}
+                        onClick={() =>
+                          handleThemeChange(themeOption.id)
+                        }
                         aria-label={`Theme ${themeOption.id}`}
                         style={
                           isSelected
@@ -795,18 +910,22 @@ export default function ChatSettings({
                           }}
                         >
                           {/* Pattern */}
+
                           <div
                             className="absolute inset-0 opacity-50"
                             style={{
-                              backgroundImage: themeOption.pattern,
+                              backgroundImage:
+                                themeOption.pattern,
                               backgroundSize: "20px 20px",
                             }}
                           />
 
-                          {/* Soft overlay */}
+                          {/* Soft Overlay */}
+
                           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/[0.08] via-transparent to-black/20" />
 
                           {/* Header */}
+
                           <div className="absolute left-0 right-0 top-0 flex h-[24px] items-center justify-between px-[7px]">
                             <div className="flex items-center gap-[3px]">
                               <span className="h-[3px] w-[3px] rounded-full bg-black/45" />
@@ -817,39 +936,46 @@ export default function ChatSettings({
                             <div className="h-[4px] w-[20px] rounded-full bg-black/15" />
                           </div>
 
-                          {/* Left message */}
+                          {/* Left Message */}
+
                           <div
                             className="absolute left-[7px] top-[43px] rounded-[7px] rounded-tl-[3px] px-[7px] py-[4px] shadow-[0_3px_8px_rgba(0,0,0,.12)]"
                             style={{
-                              backgroundColor: themeOption.second,
+                              backgroundColor:
+                                themeOption.second,
                             }}
                           >
                             <div className="h-[3px] w-[26px] rounded-full bg-white/35" />
                             <div className="mt-[3px] h-[3px] w-[18px] rounded-full bg-white/20" />
                           </div>
 
-                          {/* Right message */}
+                          {/* Right Message */}
+
                           <div
                             className="absolute right-[7px] top-[31px] rounded-[7px] rounded-tr-[3px] px-[7px] py-[5px] shadow-[0_3px_8px_rgba(0,0,0,.14)]"
                             style={{
-                              backgroundColor: themeOption.accent,
+                              backgroundColor:
+                                themeOption.accent,
                             }}
                           >
                             <div className="h-[3px] w-[25px] rounded-full bg-white/65" />
                             <div className="mt-[3px] h-[3px] w-[16px] rounded-full bg-white/35" />
                           </div>
 
-                          {/* Small right message */}
+                          {/* Small Right Message */}
+
                           <div
                             className="absolute right-[8px] top-[62px] rounded-[6px] rounded-tr-[2px] px-[6px] py-[4px]"
                             style={{
-                              backgroundColor: themeOption.second,
+                              backgroundColor:
+                                themeOption.second,
                             }}
                           >
                             <div className="h-[3px] w-[16px] rounded-full bg-white/20" />
                           </div>
 
-                          {/* Bottom emoji badge */}
+                          {/* Bottom Badge */}
+
                           {themeOption.id === 3 ? (
                             <div className="absolute bottom-[8px] left-1/2 flex h-[31px] w-[31px] -translate-x-1/2 rounded-full bg-radial-[at_50%_75%] from-cyan-50 via-cyan-300 to-cyan-500 rotate-180 to-90%" />
                           ) : (
@@ -859,16 +985,20 @@ export default function ChatSettings({
                           )}
 
                           {/* Selected */}
+
                           {isSelected && (
                             <div
-                              style={{ backgroundColor: accentColor }}
+                              style={{
+                                backgroundColor: accentColor,
+                              }}
                               className="absolute right-[6px] top-[6px] flex h-[19px] w-[19px] items-center justify-center rounded-full border border-white/30 text-[11px] font-bold text-[#151824] shadow-[0_3px_10px_rgba(0,0,0,.3)]"
                             >
                               ✓
                             </div>
                           )}
 
-                          {/* Hover highlight */}
+                          {/* Hover Highlight */}
+
                           <div className="pointer-events-none absolute inset-0 rounded-[10px] bg-white opacity-0 transition-opacity duration-200 group-hover:opacity-[0.045]" />
                         </div>
                       </button>
@@ -879,7 +1009,8 @@ export default function ChatSettings({
             </div>
           </div>
 
-          {/* Switch to Day Mode */}
+          {/* Switch to Day / Night Mode */}
+
           {language == "english" ? (
             <button
               type="button"
@@ -897,7 +1028,9 @@ export default function ChatSettings({
               <span
                 className={`text-[15.5px] font-medium ${accentTextClass}`}
               >
-                {isDayMode ? "Switch to Night Mode" : "Switch to Day Mode"}
+                {isDayMode
+                  ? "Switch to Night Mode"
+                  : "Switch to Day Mode"}
               </span>
             </button>
           ) : (
@@ -917,18 +1050,33 @@ export default function ChatSettings({
               <span
                 className={`text-[15.5px] text-right font-medium ${accentTextClass}`}
               >
-                {isDayMode ? "تغییر به حالت شب" : "تغییر به حالت روز"}
+                {isDayMode
+                  ? "تغییر به حالت شب"
+                  : "تغییر به حالت روز"}
               </span>
             </button>
           )}
 
+          {/* Divider */}
+
           {language == "english" ? (
-            <div className={`ml-[43px] h-px ${dividerBackgroundClass}`} />
+            <div
+              className="ml-[43px] h-px"
+              style={{
+                backgroundColor: dividerBackgroundColor,
+              }}
+            />
           ) : (
-            <div className={`mr-[55px] h-px ${dividerBackgroundClass}`} />
+            <div
+              className="mr-[55px] h-px"
+              style={{
+                backgroundColor: dividerBackgroundColor,
+              }}
+            />
           )}
 
           {/* Browse Themes */}
+
           {language == "english" ? (
             <button
               type="button"
@@ -970,8 +1118,11 @@ export default function ChatSettings({
           )}
         </div>
 
+        {/* Message Corners */}
+
         <div
-          className={`mt-[14px] h-[98px] w-full rounded-[15px] ${panelBackgroundClass} px-[20px] pt-[15px] transition-colors duration-200`}
+          
+          className={`${panelBackgroundColor} mt-[14px] h-[98px] w-full rounded-[15px] px-[20px] pt-[15px] transition-colors duration-200`}
         >
           {language == "english" ? (
             <div
@@ -990,6 +1141,7 @@ export default function ChatSettings({
           <div className="mt-[22px] flex items-center gap-[14px]">
             <div className="relative h-[18px] min-w-0 flex-1">
               {/* Track */}
+
               <div
                 className="
                   pointer-events-none
@@ -1005,6 +1157,7 @@ export default function ChatSettings({
               />
 
               {/* Active Track */}
+
               <div
                 className="
                   pointer-events-none
@@ -1022,6 +1175,7 @@ export default function ChatSettings({
               />
 
               {/* Range */}
+
               <input
                 type="range"
                 min={MIN_CORNER_SIZE}

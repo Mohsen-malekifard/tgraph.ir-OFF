@@ -527,7 +527,7 @@ export default function Home() {
   const { activeB, setActiveB } = useB();
   const { activeA, setActiveA } = useA();
   const { setActivePV } = usePV();
-  const { theme, setTheme, isDark, setIsDark } = useTheme();
+  const { theme, setTheme, isDark, setIsDark, back, fore } = useTheme();
   const { selectedData, setSelectedData } = useChat();
 
   const [conversations, setConversations] = useState(OFFLINE_CONVERSATIONS);
@@ -694,17 +694,15 @@ const mutedTabTextClass = isDark
   ? "text-white/45"
   : "text-[#88838D]";
 
-const pageBackgroundClass = isDark
-  ? "bg-[#050407]"
-  : "bg-[#F0B5BA]";
+ const pageBackgroundColor =
+    back[1];
 
-const chatListBackgroundClass = isDark
-  ? "bg-[#181818]"
-  : "bg-white";
+  const panelBackgroundColor =
+    back[2];
 
-const chatListBackgroundColor = isDark
-  ? "#181818"
-  : "#ffffff";
+const chatListBackgroundClass = back[1];
+
+const chatListBackgroundColor = back[1];
 
   const handleCategoryChange = (index) => {
   if (index === activeCategory2) {
@@ -1262,7 +1260,7 @@ const filteredChats = useMemo(() => {
     <div
       data-app-theme={isDark ? "dark" : "light"}
       data-app-color={theme}
-        className={`w-full h-screen ${pageBackgroundClass} flex flex-row m-0 p-0 overflow-hidden min-w-0 transition-colors duration-200`}
+        className={`w-full h-screen ${pageBackgroundColor} flex flex-row m-0 p-0 overflow-hidden min-w-0 transition-colors duration-200`}
       >
         <div
           className={`w-full h-screen min-w-0 flex ${
@@ -1293,8 +1291,7 @@ const filteredChats = useMemo(() => {
                   w-full
                   overflow-hidden
                   z-30
-                  ${theme == "red" && isDark == true && "bg-[#3a0909]/70"}
-                  ${theme == "blue" && isDark == true && "bg-[#1D202E]/70"}
+                  ${pageBackgroundColor}
                   backdrop-blur-xl
                   backdrop-saturate-150
                   transition-[height]
@@ -2062,11 +2059,7 @@ const filteredChats = useMemo(() => {
                     </div>
 
                     <div
-                      className={`${
-                        theme == "blue" && isDark == true
-                          ? "bg-[#282C3F]"
-                          : theme == "red" && isDark == true && "bg-[#252525]"
-                      } max-w-full rounded-2xl h-auto py-[7px] flex flex-col items-start mt-[15px] mx-[15px] box-border`}
+                      className={`${back[2]} max-w-full rounded-2xl h-auto py-[7px] flex flex-col items-start mt-[15px] mx-[15px] box-border`}
                     >
                       <div
                         onClick={() => setActiveB("account")}
@@ -2313,11 +2306,7 @@ const filteredChats = useMemo(() => {
                     </div>
 
                     <div
-                      className={`${
-                        theme == "blue" && isDark == true
-                          ? "bg-[#282C3F]"
-                          : theme == "red" && isDark == true && "bg-[#252525]"
-                      } max-w-full rounded-2xl h-auto py-[7px] flex flex-col ${
+                      className={`${panelBackgroundColor} max-w-full rounded-2xl h-auto py-[7px] flex flex-col ${
                         language == "english" ? "items-start" : "items-end"
                       } mt-[15px] mx-[15px] box-border`}
                     >
@@ -3261,7 +3250,7 @@ const filteredChats = useMemo(() => {
 
   [data-app-theme="light"] {
     --app-theme-page: #f0b5ba;
-    --app-theme-panel: #ffffff;
+    --app-theme-panel: #cfcccc;
     --app-theme-text: #202020;
     --app-theme-muted: #88838d;
     --app-theme-accent: #9655cf;
