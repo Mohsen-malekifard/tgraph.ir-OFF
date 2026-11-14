@@ -18,6 +18,7 @@ import Gap from "./Gap";
 
 export default function ChatSettings({
   setActiveB,
+  setIsS,
   theme,
   setTheme,
   isDark,
@@ -208,8 +209,8 @@ export default function ChatSettings({
     }
 
     setSelectedTheme(nextThemeId);
-    setTheme(nextTheme);
-    setIsDark(nextIsDark);
+    setTheme?.(nextTheme);
+    setIsDark?.(nextIsDark);
     setIsDayMode(!nextIsDark);
 
     localStorage.setItem(THEME_STORAGE_KEY, String(nextThemeId));
@@ -246,8 +247,8 @@ export default function ChatSettings({
     const selectedDarkMode = themeId === 1 || themeId === 2;
 
     setSelectedTheme(themeId);
-    setTheme(selectedColor);
-    setIsDark(selectedDarkMode);
+    setTheme?.(selectedColor);
+    setIsDark?.(selectedDarkMode);
     setIsDayMode(!selectedDarkMode);
 
     localStorage.setItem(THEME_STORAGE_KEY, String(themeId));
@@ -269,7 +270,7 @@ export default function ChatSettings({
           ? 2
           : 4;
 
-    setIsDark(nextIsDark);
+    setIsDark?.(nextIsDark);
     setIsDayMode(!nextIsDark);
     setSelectedTheme(nextThemeId);
 
@@ -278,6 +279,12 @@ export default function ChatSettings({
       DAY_MODE_STORAGE_KEY,
       String(!nextIsDark)
     );
+  };
+
+  // Close Chat Settings and return to Settings
+  const handleBack = () => {
+    setIsS?.(false);
+    setActiveB?.("settings");
   };
 
   return (
@@ -339,17 +346,11 @@ export default function ChatSettings({
           } items-center gap-[30px] text-white`}
         >
           {language == "english" ? (
-            <span
-              onClick={() => setActiveB("settings")}
-              className="cursor-pointer"
-            >
+            <span onClick={handleBack} className="cursor-pointer">
               <ArrowLeft />
             </span>
           ) : (
-            <span
-              onClick={() => setActiveB("settings")}
-              className="cursor-pointer"
-            >
+            <span onClick={handleBack} className="cursor-pointer">
               <ArrowRight />
             </span>
           )}
@@ -608,46 +609,6 @@ export default function ChatSettings({
             ) : (
               <div className={`mr-[43px] h-px ${dividerBackgroundClass}`} />
             )}
-
-            {/* {language == "english" ? (
-              <div className="flex h-[51px] items-center">
-                <div className="flex w-[43px] justify-start">
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    className="text-[21px] text-[#91a8ef]"
-                  />
-                </div>
-
-                <div className="flex flex-1 items-center justify-between">
-                  <span className="text-[15.5px] font-medium text-[#91a8ef]">
-                    Change Name Color
-                  </span>
-
-                  <span className="mr-[1px] rounded-full bg-[#2a3b31] px-[10px] py-[3px] text-[13px] font-semibold text-[#77c66c]">
-                    {name || "Mohsen"}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-row-reverse h-[51px] items-center">
-                <div className="flex flex-row-reverse w-[43px] justify-start">
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    className="text-[21px] text-[#91a8ef]"
-                  />
-                </div>
-
-                <div className="flex flex-1 items-center flex-row-reverse justify-between">
-                  <span className="text-[15.5px] text-right font-medium text-[#91a8ef]">
-                    تغییر رنگ نام
-                  </span>
-
-                  <span className="mr-[1px] rounded-full bg-[#2a3b31] px-[10px] py-[3px] text-[13px] font-semibold text-[#77c66c]">
-                    {name || "Mohsen"}
-                  </span>
-                </div>
-              </div>
-            )} */}
           </div>
         </div>
 
@@ -977,6 +938,7 @@ export default function ChatSettings({
           )}
         </div>
 
+        {/* Message Corners */}
         <div
           className={`mt-[14px] h-[98px] w-full rounded-[15px] ${panelBackgroundClass} px-[20px] pt-[15px] transition-colors duration-200`}
         >

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -24,8 +25,19 @@ import {
   Search,
   X,
 } from "lucide-react";
+import ChatSettings from "./ChatSettings-S-A";
 
-export default function Settings({ setActiveB, theme, isDark, language, isS, setIsS, activeB, ChatSettings }) {
+export default function Settings({
+  setActiveB,
+  theme,
+  setTheme,
+  isDark,
+  setIsDark,
+  language,
+  isS,
+  setIsS,
+  activeB,
+}) {
   const [isScrolled3, setIsScrolled3] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -89,15 +101,50 @@ export default function Settings({ setActiveB, theme, isDark, language, isS, set
 
   return (
     <>
-         <div className={` w-full h-screen bg-red-600 transition-all duration-300 ${isS ? "opacity-100 z-60" : "ml-[100%] opacity-0 -z-90"}`}/>
+      {/* Chat Settings - Sliding Panel */}
+      {/* Chat Settings - Right to Left Sliding Panel */}
+<div
+  className={`
+    fixed
+    inset-0
+    z-[70]
+    h-screen
+    w-full
+    overflow-hidden
+    transform-gpu
+    will-change-transform
+    transition-[transform,opacity]
+    duration-300
+    ease-[cubic-bezier(0.22,1,0.36,1)]
+    ${
+      isS
+        ? "opacity-100 pointer-events-auto"
+        : "opacity-0 pointer-events-none"
+    }
+  `}
+  style={{
+    transform: isS
+      ? "translateX(0)"
+      : "translateX(100%)",
+  }}
+>
+  <ChatSettings
+    setActiveB={setActiveB}
+    setIsS={setIsS}
+    theme={theme}
+    setTheme={setTheme}
+    isDark={isDark}
+    setIsDark={setIsDark}
+    language={language}
+  />
+</div>
+
       <div
         onScroll={(e) => {
           setIsScrolled3(e.currentTarget.scrollTop > 10);
         }}
         className="overflow-y-scroll scrollbar-none pb-[90px] z-50"
       >
-
-       
         {/* Header2 */}
         <div
           className="
@@ -238,9 +285,7 @@ export default function Settings({ setActiveB, theme, isDark, language, isS, set
             </div>
 
             <div className="mt-[20px] flex flex-col items-center leading-[25px]">
-              <span
-                className={`text-[20px] font-semibold ${textPrimaryClass}`}
-              >
+              <span className={`text-[20px] font-semibold ${textPrimaryClass}`}>
                 Mohsen Dev
               </span>
 
@@ -290,7 +335,7 @@ export default function Settings({ setActiveB, theme, isDark, language, isS, set
             </div>
 
             <div
-              onClick={() => {setIsS(true)}}
+              onClick={() => setIsS(true)}
               className={`flex h-[57px] w-full cursor-pointer items-center gap-[17px] px-[20px] ${
                 language == "english" ? "flex-row" : "flex-row-reverse"
               }`}
@@ -380,23 +425,7 @@ export default function Settings({ setActiveB, theme, isDark, language, isS, set
               )}
             </div>
 
-            {/* <div
-              className={`flex ${
-                language == "english" ? "flex-row" : "flex-row-reverse"
-              } gap-[17px] items-center h-[57px] w-full px-[20px]`}
-            >
-              <div className="w-[27px] h-[27px] rounded-lg bg-blue-400 outline-[0.5px] outline-white/60 -outline-offset-1 flex items-center justify-center text-white">
-                <FontAwesomeIcon icon={faChartPie} />
-              </div>
-              <div className="flex flex-col leading-[22.5px]">
-                <span className="text-white font-medium text-[15px]">
-                  Data and Storage
-                </span>
-                <span className="text-gray-500 font-normal text-[12.5px]">
-                  Media download settings
-                </span>
-              </div>
-            </div> */}
+            {/* Data and Storage */}
 
             <div
               className={`flex h-[57px] w-full items-center gap-[17px] px-[20px] ${
@@ -458,23 +487,7 @@ export default function Settings({ setActiveB, theme, isDark, language, isS, set
               )}
             </div>
 
-            {/* <div
-              className={`flex ${
-                language == "english" ? "flex-row" : "flex-row-reverse"
-              } gap-[17px] items-center h-[57px] w-full px-[20px]`}
-            >
-              <div className="w-[27px] h-[27px] rounded-lg bg-orange-400 outline-[0.5px] outline-white/60 -outline-offset-1 flex items-center justify-center text-white">
-                <FontAwesomeIcon icon={faVideo} />
-              </div>
-              <div className="flex flex-col leading-[22.5px]">
-                <span className="text-white font-medium text-[15px]">
-                  Power Saving
-                </span>
-                <span className="text-gray-500 font-normal text-[12.5px]">
-                  Reduce power usage on low charge
-                </span>
-              </div>
-            </div> */}
+            {/* Power Saving */}
 
             <div
               className={`flex h-[57px] w-full items-center gap-[17px] px-[20px] ${
@@ -527,17 +540,6 @@ export default function Settings({ setActiveB, theme, isDark, language, isS, set
               </span>
             )}
 
-            {/* <div className="flex gap-[17px] items-center h-[57px] w-full px-[20px]">
-              <div className="w-[27px] h-[27px] rounded-lg bg-yellow-400 outline-[0.5px] outline-white/60 -outline-offset-1 flex items-center justify-center text-white">
-                <FontAwesomeIcon icon={faComments} />
-              </div>
-              <div className="flex flex-col leading-[22.5px]">
-                <span className="text-white font-medium text-[15px]">
-                  Ask a Question
-                </span>
-              </div>
-            </div> */}
-
             <div
               className={`flex h-[57px] w-full items-center gap-[17px] px-[20px] ${
                 language == "english" ? "flex-row" : "flex-row-reverse"
@@ -561,17 +563,6 @@ export default function Settings({ setActiveB, theme, isDark, language, isS, set
                 </div>
               )}
             </div>
-
-            {/* <div className="flex gap-[17px] items-center h-[57px] w-full px-[20px]">
-              <div className="w-[27px] h-[27px] rounded-lg bg-purple-400 outline-[0.5px] outline-white/60 -outline-offset-1 flex items-center justify-center text-white">
-                <FontAwesomeIcon icon={faLightbulb} />
-              </div>
-              <div className="flex flex-col leading-[22.5px]">
-                <span className="text-white font-medium text-[15px]">
-                  Telegraph Features
-                </span>
-              </div>
-            </div> */}
 
             <div
               className={`flex h-[57px] w-full items-center gap-[17px] px-[20px] ${

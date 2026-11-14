@@ -207,7 +207,6 @@ export default function PanelsA() {
                 setActiveB={setActiveA}
                 isS={isS}
                 setIsS={setIsS}
-                ChatSettings={<ChatSettings theme={theme} setTheme={setTheme} isDark={isDark} setIsDark={setIsDark} language={language} setActiveB={setActiveA} activeB={activeA}/>}
               />
             )}
 
