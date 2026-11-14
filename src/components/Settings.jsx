@@ -25,7 +25,7 @@ import {
   X,
 } from "lucide-react";
 
-export default function Settings({ setActiveB, theme, isDark, language }) {
+export default function Settings({ setActiveB, theme, isDark, language, isS, setIsS, activeB, ChatSettings }) {
   const [isScrolled3, setIsScrolled3] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -89,12 +89,15 @@ export default function Settings({ setActiveB, theme, isDark, language }) {
 
   return (
     <>
+         <div className={` w-full h-screen bg-red-600 transition-all duration-300 ${isS ? "opacity-100 z-60" : "ml-[100%] opacity-0 -z-90"}`}/>
       <div
         onScroll={(e) => {
           setIsScrolled3(e.currentTarget.scrollTop > 10);
         }}
-        className="overflow-y-scroll scrollbar-none pb-[90px]"
+        className="overflow-y-scroll scrollbar-none pb-[90px] z-50"
       >
+
+       
         {/* Header2 */}
         <div
           className="
@@ -287,7 +290,7 @@ export default function Settings({ setActiveB, theme, isDark, language }) {
             </div>
 
             <div
-              onClick={() => setActiveB("chat-settings")}
+              onClick={() => {setIsS(true)}}
               className={`flex h-[57px] w-full cursor-pointer items-center gap-[17px] px-[20px] ${
                 language == "english" ? "flex-row" : "flex-row-reverse"
               }`}

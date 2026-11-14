@@ -16,12 +16,12 @@ export function ThemeProvider({ children }) {
   // Background colors
   const back = isDark
     ? {
-        1: "bg-[#171717]",
-        2: "bg-[#303030]",
+        1: "bg-[#040404]",
+        2: "bg-[#202020]",
       }
     : {
         1: "bg-[#ffffff]",
-        2: "bg-[#cfcccc]",
+        2: "bg-[#edebeb]",
       };
 
   // Foreground color

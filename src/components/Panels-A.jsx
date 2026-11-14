@@ -17,7 +17,7 @@ import NewGroup_T_A from "./NewGroup-T-A";
 import ChatSettings from "./ChatSettings-S-A";
 
 export default function PanelsA() {
-  const { activeA, setActiveA } = useA();
+  const { activeA, setActiveA, isS, setIsS } = useA();
   const { language } = useData();
   const { theme, isDark, setTheme, setIsDark } = useTheme();
 
@@ -150,7 +150,7 @@ export default function PanelsA() {
                       : ""
             } fixed top-0 bottom-0 left-0 w-full z-[90]
               md:top-[30px] md:bottom-[30px] md:left-1/2 md:-translate-x-1/2 md:w-[40%]
-              min-md:rounded-2xl overflow-hidden overflow-y-scroll scrollbar-none
+              min-md:rounded-2xl overflow-hidden overflow-y-scroll scrollbar-none transition-all duration-300 
               ${activeA ? "panels-a-enter" : "panels-a-exit"}`}
           >
             {activeA === "username" && (
@@ -203,7 +203,11 @@ export default function PanelsA() {
                 theme={theme}
                 isDark={isDark}
                 language={language}
+                activeB={activeA}
                 setActiveB={setActiveA}
+                isS={isS}
+                setIsS={setIsS}
+                ChatSettings={<ChatSettings theme={theme} setTheme={setTheme} isDark={isDark} setIsDark={setIsDark} language={language} setActiveB={setActiveA} activeB={activeA}/>}
               />
             )}
 
@@ -234,16 +238,7 @@ export default function PanelsA() {
               />
             )}
 
-            {activeA === "chat-settings" && (
-              <ChatSettings
-                theme={theme}
-                setTheme={setTheme}
-                isDark={isDark}
-                setIsDark={setIsDark}
-                language={language}
-                setActiveB={setActiveA}
-              />
-            )}
+          
           </div>
         </>
       )}

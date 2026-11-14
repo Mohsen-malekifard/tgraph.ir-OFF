@@ -1,5 +1,5 @@
 body{
-    background-color:#050407, #A66AE8,#A66AE8, #88838D, #050407, #F0B5BA, #181818, #303030, #545353;
+    background-color:#050407, #A66AE8,#A66AE8, #88838D, #050407, #F0B5BA, #b4b4b4, #303030, #3e3d3d, #a76ae866, rgba(255, 255, 255, 0.3), #161616, #edebeb;
 }
 
   const isBlueTheme = theme === "blue";

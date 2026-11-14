@@ -19,12 +19,14 @@ import { faImage } from "@fortawesome/free-solid-svg-icons";
 import Gap from "./Gap";
 
 export default function ChatSettings({
+  activeB,
   setActiveB,
   theme,
   setTheme,
   isDark,
   setIsDark,
   language,
+   setIsOpen2,
 }) {
   const { back } = useAppTheme();
 
@@ -439,7 +441,7 @@ export default function ChatSettings({
         >
           <button
             type="button"
-            onClick={() => setActiveB(null)}
+            onClick={() => {setActiveB(null); setIsOpen2(false); }}
             aria-label="Close"
             className="flex items-center justify-center"
           >

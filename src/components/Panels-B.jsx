@@ -285,6 +285,12 @@ export default function PanelsB({
   const {
     activeB,
     setActiveB,
+    isOpen2,
+    setIsOpen2,
+    isHidden,
+    setIsHidden,
+    isAt, 
+    setIsAt
   } = useB();
 
   const {
@@ -317,8 +323,7 @@ export default function PanelsB({
   const [isClicked, setIsClicked] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [isHidden, setIsHidden] = useState(true);
-  const [isOpen2, setIsOpen2] = useState(false);
+  //const [isHidden, setIsHidden] = useState(true);
 
   const [selectedMessages, setSelectedMessages] = useState([]);
   const [messageMenu, setMessageMenu] = useState(null);
@@ -1315,19 +1320,20 @@ export default function PanelsB({
         <div
           ref={panelsBRef}
           className={`
-            relative
-            min-w-0
+            relative 
+        
             w-full
-            max-w-full
+          
             overflow-hidden
-            transition-all
-            duration-200
+            max-md:transition-all
+            duration-initial
+            ease-in-out
 
-            ${isHidden ? "hidden" : ""}
+            ${isHidden ? "opacity-0 invisible" : ""}
             ${
-              isOpen2
-                ? "translate-x-0 opacity-100"
-                : "translate-x-100 opacity-0"
+              isOpen2 
+                ? "max-md:translate-x-0 max-md:opacity-100"
+                : "max-md:translate-x-100 max-md:opacity-0"
             }
           `}
         >
@@ -1385,6 +1391,7 @@ export default function PanelsB({
             {activeB === "account" && (
               <Account
                 theme={theme}
+                 setIsOpen2={setIsOpen2}
                 isDark={isDark}
                 language={language}
                 setActiveB={setActiveB}
@@ -1393,6 +1400,7 @@ export default function PanelsB({
 
             {activeB === "username" && (
               <Username
+                setIsOpen2={setIsOpen2}
                 theme={theme}
                 isDark={isDark}
                 language={language}
@@ -1403,6 +1411,7 @@ export default function PanelsB({
             {activeB === "chat-settings" && (
               <ChatSettings
                 theme={theme}
+                 setIsOpen2={setIsOpen2}
                 setTheme={setTheme}
                 isDark={isDark}
                 setIsDark={setIsDark}

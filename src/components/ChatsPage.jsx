@@ -43,17 +43,16 @@ export default function ChatsPage({
       }}
       className={`
         w-full
-        min-h-0
+       min-h-screen
         flex-1
         flex flex-col
         overflow-y-auto
         overflow-x-hidden
+        overscroll-y-contain
         scrollbar-none
         gap-0
-        transition-[padding]
-        duration-300
-        ease-out
-        ${isScrolled || isSelectionMode ? "pt-[45px]" : "pt-[50px]"}
+        z-0
+        pt-[140px]
       `}
     >
       {archivedRow?.visible && (
@@ -61,6 +60,7 @@ export default function ChatsPage({
           type="button"
           onClick={archivedRow.onClick}
           className={`
+            overscroll-y-contain
             group
             relative
             flex
@@ -108,7 +108,7 @@ export default function ChatsPage({
             </span>
           </span>
 
-          <span className="flex h-[25px] min-w-[25px] shrink-0 items-center justify-center rounded-full bg-[#46506f] px-[7px] text-[12px] font-semibold leading-none text-[#e4e9ff]">
+          <span className="overscroll-y-contain flex h-[25px] min-w-[25px] shrink-0 items-center justify-center rounded-full bg-[#46506f] px-[7px] text-[12px] font-semibold leading-none text-[#e4e9ff]">
             {archivedCount.toLocaleString(isEnglish ? "en-US" : "fa-IR")}
           </span>
         </button>

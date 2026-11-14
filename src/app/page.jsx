@@ -525,9 +525,9 @@ function formatContactItem(user) {
 
 export default function Home() {
   const { activeB, setActiveB } = useB();
-  const { activeA, setActiveA } = useA();
+  const { activeA, setActiveA, setIsS, isS } = useA();
   const { setActivePV } = usePV();
-  const { theme, setTheme, isDark, setIsDark, back, fore } = useTheme();
+  const { theme, isDark, back, fore } = useTheme();
   const { selectedData, setSelectedData } = useChat();
 
   const [conversations, setConversations] = useState(OFFLINE_CONVERSATIONS);
@@ -541,6 +541,8 @@ export default function Home() {
   const [isOpen1, setIsOpen1] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
   const [isOpen3, setIsOpen3] = useState(false);
+  const [isOpen4, setIsOpen4] = useState(false);
+  const [isOpen5, setIsOpen5] = useState(false);
 
   const [activeCategory, setActiveCategory] = useState(0);
   const [activeCategory2, setActiveCategory2] = useState(0);
@@ -688,21 +690,17 @@ useEffect(() => {
 
 const accentColor = "#A66AE8";
 
-const accentTextClass = "text-[#A66AE8]";
+const accentTextClass = "text-[#b4b4b4]";
 
 const mutedTabTextClass = isDark
-  ? "text-white/45"
+  ? "text-[#909090]"
   : "text-[#88838D]";
 
- const pageBackgroundColor =
-    back[1];
+const pageBackgroundClass = back[1];
 
-  const panelBackgroundColor =
-    back[2];
+const chatListBackgroundClass = isDark ? "bg-[#202020]" : "bg-[#fff]";
 
-const chatListBackgroundClass = back[1];
-
-const chatListBackgroundColor = back[1];
+const chatListBackgroundColor = isDark ? "bg-[#202020]" : "bg-[#fff]";
 
   const handleCategoryChange = (index) => {
   if (index === activeCategory2) {
@@ -751,7 +749,7 @@ const chatListBackgroundColor = back[1];
       },
     ],
     {
-      duration: 150,
+      duration: 100,
       easing: "cubic-bezier(0.4, 0, 1, 1)",
       fill: "forwards",
     }
@@ -1257,11 +1255,17 @@ const filteredChats = useMemo(() => {
 
     <PanelsPV data={selectedData} />
 
+ 
+
+         
+
     <div
       data-app-theme={isDark ? "dark" : "light"}
       data-app-color={theme}
-        className={`w-full h-screen ${pageBackgroundColor} flex flex-row m-0 p-0 overflow-hidden min-w-0 transition-colors duration-200`}
+        className={`w-full h-screen ${pageBackgroundClass} flex flex-row m-0 p-0 overflow-hidden min-w-0 transition-colors duration-200`}
       >
+
+        
         <div
           className={`w-full h-screen min-w-0 flex ${
             language == "english" ? "flex-row" : "flex-row"
@@ -1271,13 +1275,10 @@ const filteredChats = useMemo(() => {
           <div
             className={`order-1 h-screen min-w-0 max-w-full w-1/3 shrink-0 ${chatListBackgroundClass} backdrop-blur-md flex flex-col max-md:w-full transition-colors duration-200`}
           >
-            {theme == "red" && isDark == true && (
-              <div className="absolute pointer-events-none bottom-[0px] inset-x-0 h-[130px] z-30 bg-linear-to-t from-[#181818] via-[#181818]/70 to-transparent " />
-            )}
+            
+              <div className={`absolute pointer-events-none bottom-[0px] inset-x-0 h-[130px] z-30 bg-linear-to-t ${isDark ? "from-[#101010] via-[#101010]/70" : "from-[#ffffff] via-[#ffffff]/70 "} to-transparent `}/>
+          
 
-            {theme == "blue" && isDark == true && (
-              <div className="absolute pointer-events-none bottom-[0px] inset-x-0 h-[130px] z-30 bg-linear-to-t from-[#1D202E] via-[#1D202E]/70 to-transparent " />
-            )}
 
             {/* Animated Page Content — bottom tab menu stays outside */}
             <div
@@ -1287,31 +1288,29 @@ const filteredChats = useMemo(() => {
               {/* Header */}
               <div
                 className={`
-                  relative
+                  bg-transparent
+                  absolute top-0
                   w-full
                   overflow-hidden
-                  z-30
-                  ${pageBackgroundColor}
-                  backdrop-blur-xl
-                  backdrop-saturate-150
+                   
+                  backdrop-blur-sm
+                  z-60
                   transition-[height]
                   duration-300
-                  ease-out
+                  ease-out 
                   ${!activeCategory2 == 0 ? "hidden" : ""}
-                  ${isScrolled || isSelectionMode ? "h-[58px]" : "h-[14%]"}
+                  ${isScrolled ? "h-[7%]" : "h-[12%]"}
                 `}
               >
+                
+              
                 {isSelectionMode ? (
                   /* Selection Header */
                   <div
                     data-selection-header="true"
                     dir="ltr"
                     className="flex h-[58px] w-full items-center justify-between border-b border-white/[0.06] px-[12px] shadow-[0_3px_14px_rgba(0,0,0,0.10)]"
-                    style={{
-                      backgroundColor: isDark
-                        ? "#202334"
-                        : "var(--app-theme-nav)",
-                    }}
+            
                   >
                     <div className="flex min-w-0 flex-row items-center gap-[10px]">
                       <button
@@ -1339,6 +1338,8 @@ const filteredChats = useMemo(() => {
                         {selectedCountLabel}
                       </span>
                     </div>
+
+                     
 
                     <div className="flex shrink-0 flex-row items-center gap-[2px] text-white/75">
                       <button
@@ -1432,7 +1433,7 @@ const filteredChats = useMemo(() => {
                     <div
                       className={`flex ${
                         language == "english" ? "flex-row" : "flex-row"
-                      } items-center justify-between px-4 pt-3 pb-2`}
+                      } items-center justify-between px-4 pt-3 pb-2 z-[99]`}
                     >
                       {language == "english" ? (
                         <h1 className="text-[19px] font-semibold tracking-tight text-white">
@@ -1444,18 +1445,23 @@ const filteredChats = useMemo(() => {
                         </h1>
                       )}
 
-                      <span className="text-white/70 p-1">
-                        <span className="cursor-pointer">
+                      <span className="text-white/70 p-1 flex gap-5 ">
+                        <span className={`${isScrolled ? "opacity-100 scale-100" : "opacity-0 scale-0"}   transition-all duration-500 cursor-pointer`}>
+                          <SearchIcon size={20} />
+                        </span>
+                        <span onClick={()=>setIsOpen4(true)} className="cursor-pointer">
                           <EllipsisVertical size={20} />
                         </span>
                       </span>
                     </div>
 
-                    {/* Search */}
+
+                    
                     <div
                       className={`
+                      
                         absolute
-                        bottom-[5px]
+                        -bottom-[0.5px]
                         left-0
                         w-full
                         px-[10px]
@@ -1464,12 +1470,13 @@ const filteredChats = useMemo(() => {
                         gap-[10px]
                         overflow-hidden
                         transition-all
-                        duration-300
-                        ease-out
+                        duration-400
+                        ease-in-out z-10
+                        max-h-[50px]
                         ${
                           isScrolled
-                            ? "opacity-0 max-h-0 mb-[30px] pointer-events-none"
-                            : "opacity-100 max-h-[50px] translate-y-0"
+                            ? "opacity-0 scale-x-0 pointer-events-none"
+                            : "opacity-100 scale-x-100 translate-y-0"
                         }
                       `}
                     >
@@ -1575,131 +1582,18 @@ const filteredChats = useMemo(() => {
                 </div>
               )}
 
+            
+
               {/* Contacts */}
               <div
                 onScroll={(e) => {
                   setIsScrolled2(e.currentTarget.scrollTop > 10);
                 }}
                 className={`overflow-y-scroll scrollbar-none pb-[90px] ${
-                  activeCategory2 == 1 ? "" : "hidden"
+                  activeCategory2 == 1 ? `${back[1]}` : "hidden"
                 }`}
               >
-                <div
-                  className={`
-                    relative
-                    w-full
-                    overflow-hidden
-                    z-30
-                    ${theme == "red" && isDark == true && "bg-[#3a0909]/70"}
-                    ${theme == "blue" && isDark == true && "bg-[#1D202E]/70"}
-                    backdrop-blur-xl
-                    backdrop-saturate-150
-                    transition-[height]
-                    duration-300
-                    ease-out
-                    ${!activeCategory2 == 1 ? "hidden" : ""}
-                    ${isScrolled2 ? "h-[58px]" : "h-[16%]"}
-                  `}
-                >
-                  {/* Header Top */}
-                  <div
-                    className={`flex ${
-                      language == "english" ? "flex-row" : "flex-row-reverse"
-                    } items-center justify-between px-4 pt-3 pb-2`}
-                  >
-                    {language == "english" ? (
-                      <h1 className="text-[19px] font-semibold text-white tracking-tight">
-                        Connecting...
-                      </h1>
-                    ) : (
-                      <h1
-                        className="text-[19px] font-semibold text-white tracking-tight"
-                        dir="rtl"
-                      >
-                        در حال اتصال...
-                      </h1>
-                    )}
-
-                    <span
-                      className={`text-white/70 p-1 flex ${
-                        language == "english" ? "flex-row-reverse" : ""
-                      } gap-[25px] items-center`}
-                    >
-                      <span className="cursor-pointer">
-                        <EllipsisVertical size={20} />
-                      </span>
-
-                      <span
-                        className={`cursor-pointer mb-[2.5px] ${
-                          !isScrolled2
-                            ? "opacity-0 pointer-events-none"
-                            : "opacity-100"
-                        }`}
-                      >
-                        <Search size={20} />
-                      </span>
-                    </span>
-                  </div>
-
-                  {/* Search */}
-                  <div
-                    className={`
-                      absolute
-                      bottom-[5px]
-                      left-0
-                      w-full
-                      z-[50]
-                      px-[10px]
-                      flex
-                      flex-col
-                      gap-[10px]
-                      overflow-hidden
-                      transition-all
-                      duration-300
-                      ease-out
-                      max-h-[50px]
-                    `}
-                  >
-                    <div
-                      className={`px-[15px] w-full h-[40px] rounded-full outline-none bg-white/10 flex ${
-                        language == "english" ? "flex-row" : "flex-row-reverse"
-                      } items-center gap-[15px] relative`}
-                    >
-                      <span className="text-gray-400 text-center">
-                        <Search size={20} />
-                      </span>
-
-                      {language == "english" ? (
-                        <input
-                          className="outline-none w-full text-white placeholder:text-gray-400 placeholder:font-normal placeholder:text-[16px]"
-                          placeholder="Search Contacts"
-                          type="text"
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
-                      ) : (
-                        <input
-                          className="outline-none text-right w-full text-white placeholder:text-gray-400 placeholder:font-normal placeholder:text-[16px]"
-                          placeholder="جستجو در مخاطبین"
-                          type="text"
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
-                      )}
-
-                      <span
-                        onClick={() => setSearch("")}
-                        className={`text-gray-400 text-center transition-all duration-300 ${
-                          search.length == 0
-                            ? "opacity-0 scale-75"
-                            : "opacity-100 scale-100"
-                        }`}
-                      >
-                        <X size={20} />
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                
 
                 {activeCategory2 == 1 && (
                   <>
@@ -1792,6 +1686,23 @@ const filteredChats = useMemo(() => {
                       </div>
                     </div>
 
+                    <div className={`fixed  inset-x-0 h-[110px] z-[40] bg-linear-to-b ${isDark ? "from-[#000] via-[#000]/70" : "from-[#ffffff] via-[#ffffff]/70 "} to-transparent flex items-center justify-between px-[15px]`}>
+                      <div className="invisible "/>
+                      <span className="text-[17px] -mt-[45px] font-bold mx-auto text-white">Contacts</span>
+                      <div className={`${isOpen5 == true ? "w-[160px] h-[100px]" : "w-[85px] h-[40px]"} rounded-2xl transition-all duration-100 ease-in-out z-[50] top-[12.5px] right-[15px] absolute bg-[#101010] outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[10px]`}>
+                      
+                      <span className={`transition-opacity duration-100 ${isOpen5 ? "opacity-0" : "opacity-100"} text-white `}><SearchIcon size={20} /></span>
+                      <span onClick={() => setIsOpen5(true)} className={`transition-opacity duration-100 ${isOpen5 ? "opacity-0" : "opacity-100"} text-white`} ><EllipsisVertical size={20} /></span>
+                      </div>
+                    </div>
+
+                    <div
+            onClick={isOpen5 ? () => setIsOpen5(null) : undefined}
+            className={`fixed inset-0 z-[40] ${
+              isOpen5 ? "panels-a-backdrop-enter" : "panels-a-backdrop-exit"
+            }`}
+          />
+
                     <div
                       className={`z-10 transition-all duration-200 ${
                         search.length == 0
@@ -1801,12 +1712,8 @@ const filteredChats = useMemo(() => {
                     >
                       <div
                         className={`${
-                          theme == "red" && isDark == true
-                            ? "bg-[#252525]"
-                            : theme == "blue" &&
-                              isDark == true &&
-                              "bg-[#282c3f]"
-                        } max-w-full rounded-2xl h-[100px] flex flex-col items-start justify-center mt-[15px] mx-[15px] box-border`}
+                          back[2]
+                        } max-w-full rounded-2xl h-[100px] flex flex-col items-start justify-center mt-[65px] mx-[15px] box-border`}
                       >
                         <div
                           onClick={() => setActiveA("new-group")}
@@ -1865,11 +1772,7 @@ const filteredChats = useMemo(() => {
 
                       <div
                         className={`${
-                          theme == "red" && isDark == true
-                            ? "bg-[#252525]"
-                            : theme == "blue" &&
-                              isDark == true &&
-                              "bg-[#282c3f]"
+                          back[2]
                         } max-w-full rounded-2xl h-auto pt-[12px] pb-[10px] flex flex-col gap-[15px] ${
                           language == "english" ? "items-start" : "items-end"
                         } mt-[15px] mx-[15px] box-border`}
@@ -1879,7 +1782,7 @@ const filteredChats = useMemo(() => {
                             Sorted by last seen time
                           </span>
                         ) : (
-                          <span className="text-white/75 font-semibold text-[15px] mr-[20px]">
+                          <span className={`text-[#A66AE8] font-semibold text-[13px] mr-[20px] `}>
                             مرتب شده بر اساس آخرین بازدید
                           </span>
                         )}
@@ -1945,6 +1848,24 @@ const filteredChats = useMemo(() => {
                     </div>
                   </>
                 )}
+
+                <div
+                  onClick={() => setActiveA("new-message")}
+                  className={`fixed z-40 bottom-[120px] ${
+                    language == "english" ? "right-[20px]" : "left-[20px]"
+                  } transition-all duration-400 items-center ${
+                    isScrolled2 ? "opacity-0 translate-y-20" : "opacity-100"
+                  }`}
+                >
+                 <div
+  className="w-[45px] h-[45px] rounded-full text-white flex items-center justify-center shadow-lg"
+  style={{
+    backgroundColor: accentColor,
+  }}
+>
+                    <MessageCirclePlus />
+                  </div>
+                </div>
               </div>
 
               {/* Settings */}
@@ -1990,7 +1911,7 @@ const filteredChats = useMemo(() => {
                 </div>
 
                 {activeCategory2 == 2 && (
-                  <div className="relative pb-10">
+                  <div className={` ${back[1]} relative pb-10`}>
                     {isOpen && (
                       <div
                         onClick={() => setIsOpen(false)}
@@ -1999,11 +1920,7 @@ const filteredChats = useMemo(() => {
                     )}
 
                     <div
-                      className={`fixed z-[50] ${
-                        theme == "blue" && isDark == true
-                          ? "bg-[#282C3F]"
-                          : theme == "red" && isDark == true && "bg-[#252525]"
-                      } px-[12.5px] py-[12.5px] w-[200px] rounded-[5px] top-[25px] right-[20px] flex flex-col gap-[25px] origin-top-right transition-all duration-200 ease-out ${
+                      className={`fixed z-[50] ${back[1]} px-[12.5px] py-[12.5px] w-[200px] rounded-[5px] top-[25px] right-[20px] flex flex-col gap-[25px] origin-top-right transition-all duration-200 ease-out ${
                         isOpen
                           ? "opacity-100 scale-100 translate-x-0 translate-y-0 pointer-events-auto"
                           : "opacity-0 scale-0 translate-x-[-10px] translate-y-[10px] pointer-events-none"
@@ -2059,7 +1976,9 @@ const filteredChats = useMemo(() => {
                     </div>
 
                     <div
-                      className={`${back[2]} max-w-full rounded-2xl h-auto py-[7px] flex flex-col items-start mt-[15px] mx-[15px] box-border`}
+                      className={`${
+                        back[2]
+                      } max-w-full rounded-2xl h-auto py-[7px] flex flex-col items-start mt-[15px] mx-[15px] box-border`}
                     >
                       <div
                         onClick={() => setActiveB("account")}
@@ -2306,7 +2225,9 @@ const filteredChats = useMemo(() => {
                     </div>
 
                     <div
-                      className={`${panelBackgroundColor} max-w-full rounded-2xl h-auto py-[7px] flex flex-col ${
+                      className={`${
+                         back[2]
+                      } max-w-full rounded-2xl h-auto py-[7px] flex flex-col ${
                         language == "english" ? "items-start" : "items-end"
                       } mt-[15px] mx-[15px] box-border`}
                     >
@@ -2381,8 +2302,8 @@ const filteredChats = useMemo(() => {
                 onScroll={(e) => {
                   setIsScrolled4(e.currentTarget.scrollTop > 10);
                 }}
-                className={`overflow-y-scroll scrollbar-none pb-[90px] ${
-                  activeCategory2 == 3 ? "" : "hidden"
+                className={`min-h-screen scrollbar-none pb-[90px] ${
+                  activeCategory2 == 3 ? `${back[1]}` : "hidden"
                 }`}
               >
                 {isOpen1 && (
@@ -2408,9 +2329,7 @@ const filteredChats = useMemo(() => {
 
                 <div className="relative w-full overflow-hidden z-30 transition-[height] duration-300 ease-out h-[58px]">
                   <div
-                    className={`${
-                      isScrolled4 ? "bg-[#31364d]" : "bg-transparent"
-                    } fixed z-[60] w-full flex items-center justify-between px-4 pt-3 pb-3`}
+                    className={` ${back[1]} fixed z-[60] w-full flex items-center justify-between px-4 pt-3 pb-3`}
                   >
                     <h1
                       className={`text-[19px] font-semibold text-white tracking-tight ${
@@ -2432,7 +2351,7 @@ const filteredChats = useMemo(() => {
                 </div>
 
                 {activeCategory2 == 3 && (
-                  <div className="relative">
+                  <div className={`${back[1]} relative`}>
                     {isOpen && (
                       <div
                         onClick={() => setIsOpen(false)}
@@ -2442,9 +2361,7 @@ const filteredChats = useMemo(() => {
 
                     <div
                       className={`fixed z-[100] ${
-                        theme == "blue" && isDark == true
-                          ? "bg-[#282C3F]"
-                          : theme == "red" && isDark == true && "bg-[#252525]"
+                        back[2]
                       } px-[12.5px] py-[12.5px] w-[200px] rounded-[5px] top-[22.5px] right-[20px] flex flex-col gap-[25px] origin-top-right transition-all duration-200 ease-out ${
                         isOpen
                           ? "opacity-100 scale-100 translate-x-0 translate-y-0 pointer-events-auto"
@@ -2547,9 +2464,7 @@ const filteredChats = useMemo(() => {
                     <div className="flex justify-between max-w-full gap-[15px] mx-[15px] mt-[15px]">
                       <span
                         className={`basis-1/3 ${
-                          theme == "blue" && isDark == true
-                            ? "bg-[#282C3F]"
-                            : theme == "red" && isDark == true && "bg-[#252525]"
+                          back[2]
                         } h-[55px] rounded-2xl flex flex-col items-center justify-center text-white gap-[1.7px]`}
                       >
                         <span>
@@ -2564,9 +2479,7 @@ const filteredChats = useMemo(() => {
                       <span
                         onClick={() => setActiveA("account")}
                         className={`basis-1/3 ${
-                          theme == "blue" && isDark == true
-                            ? "bg-[#282C3F]"
-                            : theme == "red" && isDark == true && "bg-[#252525]"
+                          back[2]
                         } h-[55px] rounded-2xl flex flex-col items-center justify-center text-white gap-[1.7px]`}
                       >
                         <span>
@@ -2579,11 +2492,9 @@ const filteredChats = useMemo(() => {
                       </span>
 
                       <span
-                        onClick={() => setActiveA("settings")}
+                        onClick={() => {setActiveA("settings");}}
                         className={`basis-1/3 ${
-                          theme == "blue" && isDark == true
-                            ? "bg-[#282C3F]"
-                            : theme == "red" && isDark == true && "bg-[#252525]"
+                          back[2]
                         } h-[55px] rounded-2xl flex flex-col items-center justify-center text-white gap-[1.7px]`}
                       >
                         <span>
@@ -2598,9 +2509,7 @@ const filteredChats = useMemo(() => {
 
                     <div
                       className={`${
-                        theme == "blue" && isDark == true
-                          ? "bg-[#282C3F]"
-                          : theme == "red" && isDark == true && "bg-[#252525]"
+                        back[2]
                       } max-w-full rounded-2xl h-auto py-[7px] flex flex-col items-start mt-[20px] mx-[15px] box-border`}
                     >
                       <div className="flex gap-[17px] items-center h-[57px] w-full px-[20px]">
@@ -2618,11 +2527,7 @@ const filteredChats = useMemo(() => {
 
                           <div
                             className={`z-50 absolute ${
-                              theme == "blue" && isDark == true
-                                ? "bg-[#282C3F]"
-                                : theme == "red" &&
-                                  isDark == true &&
-                                  "bg-[#252525]"
+                              back[2]
                             } px-[12.5px] py-[12.5px] w-[200px] h-auto rounded-[5px] top-[10px] ${
                               language == "english"
                                 ? "left-[170px] origin-top-right"
@@ -2705,11 +2610,7 @@ const filteredChats = useMemo(() => {
 
                           <div
                             className={`z-50 absolute ${
-                              theme == "blue" && isDark == true
-                                ? "bg-[#282C3F]"
-                                : theme == "red" &&
-                                  isDark == true &&
-                                  "bg-[#252525]"
+                              back[2]
                             } px-[12.5px] py-[12.5px] w-[200px] h-auto rounded-[5px] top-[10px] ${
                               language == "english"
                                 ? "left-[170px] origin-top-right"
@@ -2798,11 +2699,7 @@ const filteredChats = useMemo(() => {
 
                           <div
                             className={`z-50 absolute ${
-                              theme == "blue" && isDark == true
-                                ? "bg-[#282C3F]"
-                                : theme == "red" &&
-                                  isDark == true &&
-                                  "bg-[#252525]"
+                              back[2]
                             } px-[12.5px] py-[12.5px] w-[200px] h-auto rounded-[5px] top-[10px] ${
                               language == "english"
                                 ? "left-[170px] origin-top-right"
@@ -2842,6 +2739,8 @@ const filteredChats = useMemo(() => {
                 )}
               </div>
 
+              
+
               {/* Chats */}
               {activeCategory2 == 0 && (
                 <ChatsPage
@@ -2873,9 +2772,8 @@ const filteredChats = useMemo(() => {
                       setShowArchived((previous) => !previous);
                     },
                   }}
-                />
+                /> 
               )}
-
               {activeCategory2 == 0 && (
                 <div
                   onClick={() => setActiveA("new-message")}
@@ -2897,12 +2795,14 @@ const filteredChats = useMemo(() => {
               )}
             </div>
 
+            
+
             {/* Fixed Bottom Page Selector */}
-            {language == "english" ? (
+             {language == "english" ? (
               <div
                 className={`
                   absolute
-                  w-[80%]
+                  w-[300px]
                   right-1/2
                   translate-x-1/2
                   z-40
@@ -2911,11 +2811,7 @@ const filteredChats = useMemo(() => {
               >
                 <div
                   ref={tabsContainerRef2}
-                  className={`relative ml-[10px] mr-[10px] h-[55px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04] ${
-                    theme == "red" && isDark == true && "bg-[#381c1c]/50"
-                  } ${
-                    theme == "blue" && isDark == true && "bg-[#2A2E41]/75"
-                  } flex flex-row items-center justify-between flex-nowrap overflow-x-scroll scrollbar-none px-[5px]`}
+                  className={`relative ml-[10px] mr-[10px] h-[55px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04]  flex flex-row items-center justify-between flex-nowrap overflow-x-scroll scrollbar-none px-[5px]`}
                 >
                   {categoriesE.map((category, index) => (
                     <button
@@ -2948,15 +2844,7 @@ const filteredChats = useMemo(() => {
                       <span
                         className={`absolute inset-0 -z-10 rounded-full pointer-events-none transition-all duration-300 ease-out ${
                           activeCategory2 === index
-                            ? `opacity-100 scale-100 ${
-                                isDark
-                                  ? theme == "red"
-                                    ? "bg-white/10"
-                                    : "bg-blue-600/15"
-                                  : isBlueTheme
-                                    ? "bg-[#1278e6]/10"
-                                    : "bg-[#d93636]/10"
-                              }`
+                            ? `opacity-100 scale-100 `
                             : "opacity-0 scale-0"
                         }`}
                       />
@@ -2988,7 +2876,7 @@ const filteredChats = useMemo(() => {
               <div
                 className={`
                   absolute
-                  w-[85%]
+                  w-[350px]
                   right-1/2
                   translate-x-1/2
                   z-40
@@ -2997,11 +2885,7 @@ const filteredChats = useMemo(() => {
               >
                 <div
                   ref={tabsContainerRef2}
-                  className={`relative ml-[10px] mr-[10px] h-[60px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04] ${
-                    theme == "red" && isDark == true && "bg-[#381c1c]/50"
-                  } ${
-                    theme == "blue" && isDark == true && "bg-[#2A2E41]/75"
-                  } flex flex-row-reverse items-center justify-between flex-nowrap overflow-x-hidden scrollbar-none px-[5px]`}
+                  className={`relative ml-[10px] mr-[10px] h-[60px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04] flex flex-row-reverse items-center justify-between flex-nowrap overflow-x-hidden scrollbar-none px-[5px]`}
                 >
                   {categoriesP.map((category, index) => (
                     <button
@@ -3031,18 +2915,10 @@ const filteredChats = useMemo(() => {
                         }
                       `}
                     >
-                      <span
+                       <span
                         className={`py-[25px] my-auto absolute inset-0 -z-10 rounded-full pointer-events-none transition-all duration-300 ease-out ${
                           activeCategory2 === index
-                            ? `opacity-100 scale-100 ${
-                                isDark
-                                  ? theme == "red"
-                                    ? "bg-white/10"
-                                    : "bg-blue-600/15"
-                                  : isBlueTheme
-                                    ? "bg-[#1278e6]/10"
-                                    : "bg-[#d93636]/10"
-                              }`
+                            ? `opacity-100 scale-100 bg-[#A66AE8]/10`
                             : "opacity-0 scale-0"
                         }`}
                       />
@@ -3073,27 +2949,37 @@ const filteredChats = useMemo(() => {
             )}
           </div>
 
+          
+         
+    
+
           {/* Categories */}
           <div
+        
             className={`
+              bg-transparent
               absolute
               w-1/3
               max-md:w-3/3
               z-40
               transition-all
-              duration-300
+              duration-500
               ease-out
               ${!activeCategory2 == 0 ? "hidden" : ""}
-              ${isScrolled || isSelectionMode ? "top-[53px]" : "top-[14.7%]"}
+              ${isScrolled || isSelectionMode ? "top-[60px]" : "top-[13%]"}
             `}
           >
+             <div className={`transition-all duration-100 ${isOpen4 ? "scale-100 origin-right opacity-100" : "scale-90 origin-right opacity-0 "} absolute -top-20 right-2.5 w-[170px] h-[160px] z-[999] bg-gray-900 rounded-xl border-1 border-gray-800 `}/>
+
+                <div
+            onClick={isOpen4 ? () => setIsOpen4(null) : undefined}
+            className={`fixed inset-0 z-[40] ${
+              isOpen4 ? "panels-a-backdrop-enter" : "panels-a-backdrop-exit"
+            }`}
+          />
             <div
               ref={tabsContainerRef}
-              className={`relative ml-[10px] mr-[10px] h-[35px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04] ${
-                theme == "red" && isDark == true && "bg-[#381c1c]/50"
-              } ${
-                theme == "blue" && isDark == true && "bg-[#2A2E41]/75"
-              } flex ${
+              className={`relative ml-[10px] mr-[10px] h-[35px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04] flex ${
                 language == "english" ? "flex-row" : "flex-row-reverse"
               } items-center justify-between flex-nowrap overflow-x-scroll scrollbar-none px-[3px]`}
             >
@@ -3139,6 +3025,8 @@ const filteredChats = useMemo(() => {
               ))}
             </div>
           </div>
+
+          
 
           {/* Chat Content */}
           <div
@@ -3229,7 +3117,11 @@ const filteredChats = useMemo(() => {
             </div>
           </div>
         )}
+
+        
       </div>
+
+     
 
       <style jsx global>{`
   /* =====================================
@@ -3237,7 +3129,7 @@ const filteredChats = useMemo(() => {
   ===================================== */
 
   [data-app-theme="dark"] {
-    --app-theme-page: #050407;
+    --app-theme-page: #ffffff;
     --app-theme-panel: #181818;
     --app-theme-text: #f5f3f7;
     --app-theme-muted: #89848e;
@@ -3249,23 +3141,24 @@ const filteredChats = useMemo(() => {
   }
 
   [data-app-theme="light"] {
-    --app-theme-page: #f0b5ba;
-    --app-theme-panel: #cfcccc;
+    --app-theme-page: #e2e0e0;
+    --app-theme-panel: #edebeb;
     --app-theme-text: #202020;
     --app-theme-muted: #88838d;
     --app-theme-accent: #9655cf;
-    --app-theme-surface: #f2f2f2;
+    --app-theme-surface: #a76ae866;
     --app-theme-nav: #ffffff;
     --app-theme-hover: rgba(150, 85, 207, 0.10);
     --app-theme-border: rgba(40, 30, 50, 0.08);
   }
+
 
   /* =====================================
      MAIN BACKGROUNDS
   ===================================== */
 
   [data-app-theme="dark"] {
-    background-color: #050407;
+    background-color: #000;
   }
 
   [data-app-theme="light"] {
@@ -3368,21 +3261,23 @@ const filteredChats = useMemo(() => {
   [data-app-theme] [class*="bg-white/10"] span:has(svg) {
     color: var(--app-theme-muted) !important;
   }
-
   /* =====================================
      NAVIGATION BARS
   ===================================== */
 
   [data-app-theme="light"] [class*="backdrop-blur-xl"] {
-    background-color: rgba(255, 255, 255, 0.94) !important;
+    background-color: rgba(255, 255, 255, 0.3) !important;
     border-color: var(--app-theme-border) !important;
   }
 
-  [data-app-theme="dark"] [class*="backdrop-blur-xl"] {
-    background-color: rgba(24, 24, 24, 0.94) !important;
+  [data-app-theme="dark"] [class*="rounded-full backdrop-blur-xl"] {
+    background-color: rgba(60, 60, 60, 0.2) !important;
     border-color: rgba(255, 255, 255, 0.05) !important;
   }
 
+  
+
+  
   /* =====================================
      CATEGORY INDICATORS
   ===================================== */
@@ -3472,6 +3367,81 @@ const filteredChats = useMemo(() => {
       transition-duration: 1ms !important;
     }
   }
+
+  @keyframes panelsAEnter {
+          from {
+            opacity: 0;
+            scale: 0.94;
+          }
+
+          to {
+            opacity: 1;
+            scale: 1;
+          }
+        }
+
+        @keyframes panelsAExit {
+          from {
+            opacity: 1;
+            scale: 1;
+          }
+
+          to {
+            opacity: 0;
+            scale: 0.94;
+          }
+        }
+
+        @keyframes panelsABackdropEnter {
+          from {
+            opacity: 0;
+          }
+
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes panelsABackdropExit {
+          from {
+            opacity: 1;
+          }
+
+          to {
+            opacity: 0;
+          }
+        }
+
+        .panels-a-enter {
+          animation: panelsAEnter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          transform-origin: center center;
+          will-change: opacity, scale;
+        }
+
+        .panels-a-exit {
+          animation: panelsAExit 240ms cubic-bezier(0.4, 0, 1, 1) both;
+          transform-origin: center center;
+          pointer-events: none;
+          will-change: opacity, scale;
+        }
+
+        .panels-a-backdrop-enter {
+          animation: panelsABackdropEnter 240ms ease-out both;
+        }
+
+        .panels-a-backdrop-exit {
+          animation: panelsABackdropExit 240ms ease-in both;
+          pointer-events: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .panels-a-enter,
+          .panels-a-exit,
+          .panels-a-backdrop-enter,
+          .panels-a-backdrop-exit {
+            animation-duration: 1ms;
+          }
+        }
 `}</style>
     </div>
   );

@@ -122,7 +122,7 @@ export default function Conver({
         checked
           ? {
               backgroundColor: `${accentColor}18`,
-              boxShadow: `inset 0 0 0 1px ${accentColor}4D`,
+              
             }
           : undefined
       }
