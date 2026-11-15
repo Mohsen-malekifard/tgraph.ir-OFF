@@ -1686,16 +1686,78 @@ const filteredChats = useMemo(() => {
                       </div>
                     </div>
 
-                    <div className={`fixed  inset-x-0 h-[110px] z-[40] bg-linear-to-b ${isDark ? "from-[#000] via-[#000]/70" : "from-[#ffffff] via-[#ffffff]/70 "} to-transparent flex items-center justify-between px-[15px]`}>
-                      <div className="invisible "/>
-                      <span className="text-[17px] -mt-[45px] font-bold mx-auto text-white">Contacts</span>
-                      <div className={`${isOpen5 == true ? "w-[160px] h-[100px]" : "w-[85px] h-[40px]"} rounded-2xl transition-all duration-100 ease-in-out z-[50] top-[12.5px] right-[15px] absolute bg-[#101010] outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[10px]`}>
-                      
-                      <span className={`transition-opacity duration-100 ${isOpen5 ? "opacity-0" : "opacity-100"} text-white `}><SearchIcon size={20} /></span>
-                      <span onClick={() => setIsOpen5(true)} className={`transition-opacity duration-100 ${isOpen5 ? "opacity-0" : "opacity-100"} text-white`} ><EllipsisVertical size={20} /></span>
-                      </div>
-                    </div>
+                    <div className="fixed inset-x-0 h-[100px] z-[40] flex items-center justify-between px-[15px]">
+  {/* Layer 1: soft blur across the whole header */}
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute inset-0 backdrop-blur-md transition-opacity duration-300 ease-out ${
+      isScrolled2 ? "opacity-100" : "opacity-0"
+    }`}
+    style={{
+      WebkitMaskImage:
+        "linear-gradient(to bottom, #000 0%, #000 45%, transparent 100%)",
+      maskImage:
+        "linear-gradient(to bottom, #000 0%, #000 45%, transparent 100%)",
+    }}
+  />
 
+  {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute inset-0 backdrop-blur-2xl transition-opacity duration-300 ease-out ${
+      isScrolled2 ? "opacity-100" : "opacity-0"
+    }`}
+    style={{
+      WebkitMaskImage:
+        "linear-gradient(to bottom, #000 0%, #000 30%, transparent 75%)",
+      maskImage:
+        "linear-gradient(to bottom, #000 0%, #000 30%, transparent 75%)",
+    }}
+  />
+
+  {/* Layer 3: dark (or white in light mode) gradient on top of the blur */}
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute inset-0 bg-linear-to-b transition-opacity duration-300 ease-out ${
+      isDark
+        ? "from-[#000]/90 via-[#000]/50"
+        : "from-[#ffffff] via-[#ffffff]/70"
+    } to-transparent ${
+      isScrolled2 ? "opacity-100" : "opacity-0"
+    }`}
+  />
+
+  <div className="invisible " />
+
+  <span className="relative text-[17px] -mt-[35px] font-bold mx-auto text-white">
+    Contacts
+  </span>
+
+  <div
+    className={`${
+      isOpen5 == true ? "w-[160px] h-[100px]" : "w-[85px] h-[40px]"
+    } rounded-2xl transition-all duration-100 ease-in-out z-[50] top-[12.5px] right-[15px] absolute bg-[#101010] outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[10px]`}
+  >
+    <span
+      className={`transition-opacity duration-100 ${
+        isOpen5 ? "opacity-0" : "opacity-100"
+      } text-white `}
+    >
+      <SearchIcon size={20} />
+    </span>
+
+    <span
+      onClick={() => setIsOpen5(true)}
+      className={`transition-opacity duration-100 ${
+        isOpen5 ? "opacity-0" : "opacity-100"
+      } text-white`}
+    >
+      <EllipsisVertical size={20} />
+    </span>
+  </div>
+</div>
+                    
+                    
                     <div
             onClick={isOpen5 ? () => setIsOpen5(null) : undefined}
             className={`fixed inset-0 z-[40] ${
@@ -1713,7 +1775,7 @@ const filteredChats = useMemo(() => {
                       <div
                         className={`${
                           back[2]
-                        } max-w-full rounded-2xl h-[100px] flex flex-col items-start justify-center mt-[65px] mx-[15px] box-border`}
+                        } max-w-full rounded-2xl h-[100px] flex flex-col items-start justify-center mt-[62.5px] mx-[15px] box-border`}
                       >
                         <div
                           onClick={() => setActiveA("new-group")}
