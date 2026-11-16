@@ -1449,9 +1449,9 @@ const filteredChats = useMemo(() => {
                         <span className={`${isScrolled ? "opacity-100 scale-100" : "opacity-0 scale-0"}   transition-all duration-500 cursor-pointer`}>
                           <SearchIcon size={20} />
                         </span>
-                        <span onClick={()=>setIsOpen4(true)} className="cursor-pointer">
+                        <div onClick={()=>setIsOpen4(true)} className="flex items-center justify-center w-[25px] h-[25px] rounded-full">
                           <EllipsisVertical size={20} />
-                        </span>
+                        </div>
                       </span>
                     </div>
 
@@ -1686,32 +1686,32 @@ const filteredChats = useMemo(() => {
                       </div>
                     </div>
 
-                    <div className="fixed inset-x-0 h-[100px] z-[40] flex items-center justify-between px-[15px]">
+                    <div className="fixed inset-x-0 h-[110px] z-[40] flex items-center justify-between px-[15px]">
   {/* Layer 1: soft blur across the whole header */}
   <div
     aria-hidden="true"
-    className={`pointer-events-none absolute inset-0 backdrop-blur-md transition-opacity duration-300 ease-out ${
+    className={`pointer-events-none absolute inset-0 backdrop-blur-[7px] transition-opacity duration-300 ease-out ${
       isScrolled2 ? "opacity-100" : "opacity-0"
     }`}
     style={{
       WebkitMaskImage:
-        "linear-gradient(to bottom, #000 0%, #000 45%, transparent 100%)",
+        "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
       maskImage:
-        "linear-gradient(to bottom, #000 0%, #000 45%, transparent 100%)",
+        "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
     }}
   />
 
   {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
   <div
     aria-hidden="true"
-    className={`pointer-events-none absolute inset-0 backdrop-blur-2xl transition-opacity duration-300 ease-out ${
+    className={`pointer-events-none absolute inset-0 backdrop-blur-[3.5px] transition-opacity duration-300 ease-out ${
       isScrolled2 ? "opacity-100" : "opacity-0"
     }`}
     style={{
       WebkitMaskImage:
-        "linear-gradient(to bottom, #000 0%, #000 30%, transparent 75%)",
+        "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
       maskImage:
-        "linear-gradient(to bottom, #000 0%, #000 30%, transparent 75%)",
+        "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
     }}
   />
 
@@ -1720,8 +1720,8 @@ const filteredChats = useMemo(() => {
     aria-hidden="true"
     className={`pointer-events-none absolute inset-0 bg-linear-to-b transition-opacity duration-300 ease-out ${
       isDark
-        ? "from-[#000]/90 via-[#000]/50"
-        : "from-[#ffffff] via-[#ffffff]/70"
+        ? "from-[#000]/55 via-[#000]/20"
+        : "from-[#ffffff]/55 via-[#ffffff]/20"
     } to-transparent ${
       isScrolled2 ? "opacity-100" : "opacity-0"
     }`}
@@ -1729,14 +1729,14 @@ const filteredChats = useMemo(() => {
 
   <div className="invisible " />
 
-  <span className="relative text-[17px] -mt-[35px] font-bold mx-auto text-white">
+  <span className="relative text-[17px] -mt-[42.5px] font-bold mx-auto text-white">
     Contacts
   </span>
 
   <div
     className={`${
-      isOpen5 == true ? "w-[160px] h-[100px]" : "w-[85px] h-[40px]"
-    } rounded-2xl transition-all duration-100 ease-in-out z-[50] top-[12.5px] right-[15px] absolute bg-[#101010] outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[10px]`}
+      isOpen5 == true ? "w-[160px] h-[100px] rounded-2xl" : "w-[85px] h-[40px] rounded-3xl"
+    } transition-all duration-100 ease-in-out z-[50] top-[12.5px] right-[15px] absolute bg-[#101010] outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
   >
     <span
       className={`transition-opacity duration-100 ${
@@ -3031,7 +3031,7 @@ const filteredChats = useMemo(() => {
               ${isScrolled || isSelectionMode ? "top-[60px]" : "top-[13%]"}
             `}
           >
-             <div className={`transition-all duration-100 ${isOpen4 ? "scale-100 origin-right opacity-100" : "scale-90 origin-right opacity-0 "} absolute -top-20 right-2.5 w-[170px] h-[160px] z-[999] bg-gray-900 rounded-xl border-1 border-gray-800 `}/>
+             <div className={`transition-all duration-100 ${isOpen4 ? "scale-100 origin-right opacity-100 z-[999]" : "scale-90 origin-right opacity-0 pointer-events-none"} absolute -top-20 right-2.5 w-[170px] h-[160px] bg-gray-900 rounded-xl border-1 border-gray-800 `}/>
 
                 <div
             onClick={isOpen4 ? () => setIsOpen4(null) : undefined}
