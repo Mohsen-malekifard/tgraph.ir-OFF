@@ -527,7 +527,7 @@ export default function Home() {
   const { activeB, setActiveB } = useB();
   const { activeA, setActiveA, setIsS, isS } = useA();
   const { setActivePV } = usePV();
-  const { theme, isDark, back, fore } = useTheme();
+  const { theme, setTheme, isDark, setIsDark, back, fore } = useTheme();
   const { selectedData, setSelectedData } = useChat();
 
   const [conversations, setConversations] = useState(OFFLINE_CONVERSATIONS);
@@ -543,6 +543,7 @@ export default function Home() {
   const [isOpen3, setIsOpen3] = useState(false);
   const [isOpen4, setIsOpen4] = useState(false);
   const [isOpen5, setIsOpen5] = useState(false);
+  const [isOpen6, setIsOpen6] = useState(false);
 
   const [activeCategory, setActiveCategory] = useState(0);
   const [activeCategory2, setActiveCategory2] = useState(0);
@@ -551,6 +552,7 @@ export default function Home() {
   const [isScrolled2, setIsScrolled2] = useState(false);
   const [isScrolled3, setIsScrolled3] = useState(false);
   const [isScrolled4, setIsScrolled4] = useState(false);
+  const [isScrolled5, setIsScrolled5] = useState(false);
 
   const [sorted, setSorted] = useState(false);
 
@@ -563,6 +565,11 @@ export default function Home() {
   const [showArchived, setShowArchived] = useState(false);
   const [isSelectionMenuOpen, setIsSelectionMenuOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState(10);
+    const [isDayMode, setIsDayMode] = useState(false);
+
+    const THEME_STORAGE_KEY = "chat_color_theme";
+  const DAY_MODE_STORAGE_KEY = "chat_day_mode";
 
   // مقدار search قبل از استفاده در useEffect تعریف می‌شود.
   const [search, setSearch] = useState("");
@@ -686,19 +693,58 @@ useEffect(() => {
     { title: "پروفایل" },
   ];
 
+  const themes = [
+    {
+      isDark: true,
+      id: 1,
+      bg: "radial-gradient(circle at 70% 15%, rgba(52,153,255,.2), transparent 100%), #07090d",
+      accent: "#2c9cf2",
+      second: "#30343b",
+      pattern:
+        "radial-gradient(circle at 10% 90%, rgba(255,255,255,.08) 1px, transparent 1px)",
+    },
+    {
+      isDark: true,
+      id: 2,
+      bg: "radial-gradient(circle at 70% 15%, rgba(185, 86, 86, 0.4), transparent 100%), #080b09",
+      accent: "#f22c2c",
+      second: "#303833",
+      pattern:
+        "radial-gradient(circle at 10% 90%, rgba(255,255,255,.08) 1px, transparent 1px)",
+    },
+    {
+      isDark: false,
+      id: 3,
+      bg: "radial-gradient(circle at 60% 20%, rgba(79,186,217,.8), transparent 100%), #ffffff",
+      accent: "#50b7d0",
+      second: "#343b40",
+      pattern:
+        "radial-gradient(circle at 10% 90%, rgba(255,255,255,.08) 1px, transparent 1px)",
+    },
+    {
+      isDark: false,
+      id: 4,
+      bg: "radial-gradient(circle at 60% 20%, rgba(217, 79, 79, 0.8), transparent 100%), #ffffff",
+      accent: "#ec5454",
+      second: "#30313a",
+      pattern:
+        "radial-gradient(circle at 10% 90%, rgba(255,255,255,.08) 1px, transparent 1px)",
+    },
+  ];
+
   const isBlueTheme = theme === "blue";
 
 const accentColor = "#A66AE8";
 
-const accentTextClass = "text-[#b4b4b4]";
+const accentTextClass = "text-[#A66AE8]";
 
 const mutedTabTextClass = isDark
-  ? "text-[#909090]"
+  ? "text-[#c6c5c5]"
   : "text-[#88838D]";
 
 const pageBackgroundClass = back[1];
 
-const chatListBackgroundClass = isDark ? "bg-[#202020]" : "bg-[#fff]";
+const chatListBackgroundClass = isDark ? "bg-[#181818]" : "bg-[#fff]";
 
 const chatListBackgroundColor = isDark ? "bg-[#202020]" : "bg-[#fff]";
 
@@ -1201,6 +1247,104 @@ const filteredChats = useMemo(() => {
     [privateChatItems, selectedData, setSelectedData]
   );
 
+  useEffect(() => {
+    
+
+    const savedTheme = localStorage?.getItem(
+      THEME_STORAGE_KEY
+    );
+
+    const parsedTheme = Number(savedTheme);
+
+    let nextTheme = theme === "blue" ? "blue" : "red";
+    let nextIsDark = isDark;
+
+    let nextThemeId =
+      nextTheme === "blue"
+        ? nextIsDark
+          ? 1
+          : 3
+        : nextIsDark
+          ? 2
+          : 4;
+
+    if (
+      savedTheme !== null &&
+      Number.isInteger(parsedTheme) &&
+      parsedTheme >= 1 &&
+      parsedTheme <= themes.length
+    ) {
+      nextThemeId = parsedTheme;
+
+      nextTheme =
+        parsedTheme === 1 || parsedTheme === 3
+          ? "blue"
+          : "red";
+
+      nextIsDark =
+        parsedTheme === 1 || parsedTheme === 2;
+    }
+
+    const savedDayMode = localStorage.getItem(
+      DAY_MODE_STORAGE_KEY
+    );
+
+    if (savedDayMode !== null) {
+      nextIsDark = savedDayMode !== "true";
+
+      nextThemeId =
+        nextTheme === "blue"
+          ? nextIsDark
+            ? 1
+            : 3
+          : nextIsDark
+            ? 2
+            : 4;
+    }
+
+    setSelectedTheme(nextThemeId);
+    setTheme(nextTheme);
+    setIsDark(nextIsDark);
+    setIsDayMode(!nextIsDark);
+
+    localStorage.setItem(
+      THEME_STORAGE_KEY,
+      String(nextThemeId)
+    );
+
+    localStorage.setItem(
+      DAY_MODE_STORAGE_KEY,
+      String(!nextIsDark)
+    );
+  }, []);
+
+  const handleDayMode = () => {
+    const nextIsDark = !isDark;
+
+    const nextThemeId =
+      theme === "blue"
+        ? nextIsDark
+          ? 1
+          : 3
+        : nextIsDark
+          ? 2
+          : 4;
+
+    setIsDark(nextIsDark);
+    setIsDayMode(!nextIsDark);
+    setSelectedTheme(nextThemeId);
+
+    localStorage.setItem(
+      THEME_STORAGE_KEY,
+      String(nextThemeId)
+    );
+
+    localStorage.setItem(
+      DAY_MODE_STORAGE_KEY,
+      String(!nextIsDark)
+    );
+  };
+
   if (loading) {
     return (
       <>
@@ -1245,6 +1389,8 @@ const filteredChats = useMemo(() => {
       </>
     );
   }
+
+  
 
   return (
   <div
@@ -1735,8 +1881,8 @@ const filteredChats = useMemo(() => {
 
   <div
     className={`${
-      isOpen5 == true ? "w-[160px] h-[100px] rounded-2xl" : "w-[85px] h-[40px] rounded-3xl"
-    } transition-all duration-100 ease-in-out z-[50] top-[12.5px] right-[15px] absolute bg-[#101010] outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
+      isOpen5 == true ? `w-[160px] h-[100px] rounded-2xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}` : `w-[85px] h-[40px] rounded-3xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}`
+    } transition-all duration-100 ease-in-out z-[50] top-[12.5px] right-[15px] absolute  outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
   >
     <span
       className={`transition-opacity duration-100 ${
@@ -1933,47 +2079,101 @@ const filteredChats = useMemo(() => {
               {/* Settings */}
               <div
                 onScroll={(e) => {
-                  setIsScrolled3(e.currentTarget.scrollTop > 10);
+                  setIsScrolled3(e.currentTarget.scrollTop > 45);
                 }}
-                className={`overflow-y-scroll scrollbar-none pb-[90px] ${
+                className={`overflow-y-scroll scrollbar-none ${back[1]} pb-[90px] ${
                   activeCategory2 == 2 ? "" : "hidden"
                 }`}
               >
-                <div className="relative w-full overflow-hidden z-30 transition-[height] duration-300 ease-out h-[58px]">
-                  <div
-                    className={`${
-                      isScrolled3
-                        ? theme == "blue" && isDark == true
-                          ? "bg-[#212641]"
-                          : theme == "red" && isDark == true && "bg-[#252525]"
-                        : "bg-transparent"
-                    } fixed z-[60] w-full flex items-center justify-between px-4 pt-3 pb-3`}
-                  >
-                    <h1
-                      className={`text-[19px] font-semibold text-white tracking-tight ${
-                        !isScrolled3 ? "invisible" : ""
-                      }`}
-                    >
-                      Connecting...
-                    </h1>
+                <div className="fixed inset-x-0 h-[110px] z-[40] flex items-center justify-between px-[15px]">
+  {/* Layer 1: soft blur across the whole header */}
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute inset-0 backdrop-blur-[7px] transition-opacity duration-300 ease-out ${
+      isScrolled3 ? "opacity-100" : "opacity-0"
+    }`}
+    style={{
+      WebkitMaskImage:
+        "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+      maskImage:
+        "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+    }}
+  />
 
-                    <span className="text-white/70 p-1 flex flex-row-reverse gap-[25px] items-center">
-                      <span
-                        onClick={() => setIsOpen(true)}
-                        className="cursor-pointer"
-                      >
-                        <EllipsisVertical size={20} />
-                      </span>
+  {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute inset-0 backdrop-blur-[3.5px] transition-opacity duration-300 ease-out ${
+      isScrolled3 ? "opacity-100" : "opacity-0"
+    }`}
+    style={{
+      WebkitMaskImage:
+        "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+      maskImage:
+        "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+    }}
+  />
 
-                      <span className="cursor-pointer mb-[2.5px]">
-                        <Search size={20} />
-                      </span>
-                    </span>
-                  </div>
-                </div>
+  {/* Layer 3: dark (or white in light mode) gradient on top of the blur */}
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute inset-0 bg-linear-to-b transition-opacity duration-300 ease-out ${
+      isDark
+        ? "from-[#000]/55 via-[#000]/20"
+        : "from-[#ffffff]/55 via-[#ffffff]/20"
+    } to-transparent ${
+      isScrolled3 ? "opacity-100" : "opacity-0"
+    }`}
+  />
+
+  <div
+    className={`
+     w-[40px] h-[40px] rounded-full ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}
+      z-[50] top-[14px] left-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-center px-[12.5px]`}
+  />
+
+  <span className={`relative text-[17px] -mt-[41px] font-bold mx-auto text-white ${isScrolled3 ? "opacity-100" : "opacity-0"}`}>
+    Settings
+  </span>
+
+  <div
+    className={`${
+      isOpen6 == true ? ` min-w-[160px] h-auto px-[15px] py-[10px] rounded-2xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"} ` : `w-[85px] h-[40px] rounded-3xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}`
+    } transition-all duration-100 ease-in-out z-[50] top-[14px] right-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
+  >
+    {!isOpen6 && <span
+      className={`transition-opacity duration-100 ${
+        isOpen6 ? "opacity-0" : "opacity-100"
+      } text-white `}
+    >
+      <SearchIcon size={20} />
+    </span>}
+
+    {!isOpen6 && <span
+      onClick={() => setIsOpen6(true)}
+      className={`transition-opacity duration-100 ${
+        isOpen6 ? "opacity-0" : "opacity-100"
+      } text-white`}
+    >
+      <EllipsisVertical size={20} />
+    </span>}
+
+    {isOpen6 && <div className={`flex gap-[10px] transition-opacity duration-100 w-full ${isOpen6 ? "opacity-100" : "opacity-0"} text-white`} >
+         <LogOut size={22}/>
+         <span className="tracking-wide">Log Out</span>
+    </div>}
+  </div>
+</div>
+
+<div
+            onClick={isOpen6 ? () => setIsOpen6(null) : undefined}
+            className={`fixed inset-0 z-[40] ${
+              isOpen6 ? "panels-a-backdrop-enter" : "panels-a-backdrop-exit"
+            }`}
+          />
 
                 {activeCategory2 == 2 && (
-                  <div className={` ${back[1]} relative pb-10`}>
+                  <div className={`  relative pb-10`}>
                     {isOpen && (
                       <div
                         onClick={() => setIsOpen(false)}
@@ -1982,7 +2182,7 @@ const filteredChats = useMemo(() => {
                     )}
 
                     <div
-                      className={`fixed z-[50] ${back[1]} px-[12.5px] py-[12.5px] w-[200px] rounded-[5px] top-[25px] right-[20px] flex flex-col gap-[25px] origin-top-right transition-all duration-200 ease-out ${
+                      className={`fixed z-[50] px-[12.5px] py-[12.5px] w-[200px] rounded-[5px] top-[25px] right-[20px] flex flex-col gap-[25px] origin-top-right transition-all duration-200 ease-out ${
                         isOpen
                           ? "opacity-100 scale-100 translate-x-0 translate-y-0 pointer-events-auto"
                           : "opacity-0 scale-0 translate-x-[-10px] translate-y-[10px] pointer-events-none"
@@ -2017,7 +2217,7 @@ const filteredChats = useMemo(() => {
                       )}
                     </div>
 
-                    <div className="mt-[10px] flex flex-col items-center justify-center w-full">
+                    <div className="mt-[70px] flex flex-col items-center justify-center w-full">
                       <div className="relative w-[110px] h-[110px] rounded-full object-cover bg-[url(/icon.png)] bg-cover bg-center">
                         <div className="absolute -bottom-[3px] -right-[3px] flex items-center justify-center text-white w-[30px] h-[30px] border-[2.5px] box-content border-black rounded-full bg-blue-600">
                           <FontAwesomeIcon icon={faCamera} />
@@ -2802,7 +3002,7 @@ const filteredChats = useMemo(() => {
               </div>
 
               
-
+              
               {/* Chats */}
               {activeCategory2 == 0 && (
                 <ChatsPage
@@ -2836,6 +3036,7 @@ const filteredChats = useMemo(() => {
                   }}
                 /> 
               )}
+              
               {activeCategory2 == 0 && (
                 <div
                   onClick={() => setActiveA("new-message")}
@@ -2868,7 +3069,7 @@ const filteredChats = useMemo(() => {
                   right-1/2
                   translate-x-1/2
                   z-40
-                  bottom-[45px]
+                  bottom-[20px]
                 `}
               >
                 <div
@@ -2943,11 +3144,12 @@ const filteredChats = useMemo(() => {
                   translate-x-1/2
                   z-40
                   bottom-[40px]
+                  max-md:bottom-[25px]
                 `}
               >
                 <div
                   ref={tabsContainerRef2}
-                  className={`relative ml-[10px] mr-[10px] h-[60px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04] flex flex-row-reverse items-center justify-between flex-nowrap overflow-x-hidden scrollbar-none px-[5px]`}
+                  className={`relative ml-[10px] mr-[10px] h-[57.5px] rounded-full backdrop-blur-xl backdrop-saturate-150 border border-white/[0.04] flex flex-row-reverse items-center justify-between flex-nowrap overflow-x-hidden scrollbar-none px-[5px]`}
                 >
                   {categoriesP.map((category, index) => (
                     <button
@@ -2959,7 +3161,7 @@ const filteredChats = useMemo(() => {
                       onClick={() => handleCategoryChange(index)}
                       className={`
                         relative isolate
-                        h-[40px]
+                        h-[37.5px]
                         flex-1 min-w-0
                         px-[14px]
                         flex items-center justify-center
@@ -2978,7 +3180,7 @@ const filteredChats = useMemo(() => {
                       `}
                     >
                        <span
-                        className={`py-[25px] my-auto absolute inset-0 -z-10 rounded-full pointer-events-none transition-all duration-300 ease-out ${
+                        className={`py-[23.8px] my-auto absolute inset-0 -z-10 rounded-full pointer-events-none transition-all duration-300 ease-out ${
                           activeCategory2 === index
                             ? `opacity-100 scale-100 bg-[#A66AE8]/10`
                             : "opacity-0 scale-0"
@@ -3027,11 +3229,29 @@ const filteredChats = useMemo(() => {
               transition-all
               duration-500
               ease-out
+              overscroll-y-none
               ${!activeCategory2 == 0 ? "hidden" : ""}
               ${isScrolled || isSelectionMode ? "top-[60px]" : "top-[13%]"}
             `}
           >
-             <div className={`transition-all duration-100 ${isOpen4 ? "scale-100 origin-right opacity-100 z-[999]" : "scale-90 origin-right opacity-0 pointer-events-none"} absolute -top-20 right-2.5 w-[170px] h-[160px] bg-gray-900 rounded-xl border-1 border-gray-800 `}/>
+             <div className={`transition-all duration-100 ${isOpen4 ? "scale-100 origin-right opacity-100" : "scale-90 origin-right opacity-0 pointer-events-none"} absolute -top-20 right-2.5 w-auto min-w-[200px] tracking-wide h-auto ${isDark ? "bg-[#202020]" : back[2]} rounded-[12.5px] border-1 border-[#c6c5c5]/5 z-[999] flex flex-col gap-[12.5px] py-[10.5px]`}>
+                <div onClick={handleDayMode} className="flex gap-[10px] items-center w-full text-white mx-[10px]">
+                  <User size={22}/>
+                  {isDark ? <span>Day Mode</span> : <span>Dark Mode</span>}
+                </div>
+                <div className={`-mt-[1.5px] w-full h-[10px] ${isDark ? "bg-[#272727]" : "bg-[#cfcece]"}`}/>
+                
+                <div className="-mt-[1.5px] flex flex-col gap-[15px]">
+                <div className="flex gap-[10px] items-center w-full text-white mx-[10px]">
+                  <User size={22}/>
+                  <span>New Group</span>
+                </div>
+                <div className="flex gap-[10px] items-center w-full text-white mx-[10px]">
+                  <User size={22}/>
+                  <span>Saved Messages</span>
+                </div>
+                </div>
+             </div>
 
                 <div
             onClick={isOpen4 ? () => setIsOpen4(null) : undefined}
@@ -3284,8 +3504,8 @@ const filteredChats = useMemo(() => {
   ===================================== */
 
   [data-app-theme="light"] [class*="rounded-2xl"],
-  [data-app-theme="light"] [class*="rounded-[5px]"] {
-    background-color: var(--app-theme-panel) !important;
+  [data-app-theme="light"] [class*="rounded-3xl"] {
+    background-color: var(--app-theme-panel);
     border-color: var(--app-theme-border);
   }
 

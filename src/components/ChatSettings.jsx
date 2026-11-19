@@ -9,6 +9,7 @@ import {
   EllipsisVertical,
   SunMedium,
   Paintbrush,
+  SearchIcon
 } from "lucide-react";
 
 import { useTheme as useAppTheme } from "@/context/ThemeContext";
@@ -26,13 +27,15 @@ export default function ChatSettings({
   isDark,
   setIsDark,
   language,
-   setIsOpen2,
+  isB,
+  setIsS
 }) {
   const { back } = useAppTheme();
 
   const [divide, setDevide] = useState(16);
   const [divide2, setDevide2] = useState(15);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState(10);
   const [isDayMode, setIsDayMode] = useState(false);
@@ -390,12 +393,7 @@ export default function ChatSettings({
     >
       {/* Overlay */}
 
-      {isOpen && (
-        <div
-          onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-[40]"
-        />
-      )}
+     
 
       {/* Menu */}
 
@@ -425,53 +423,97 @@ export default function ChatSettings({
 
       {/* Header */}
 
-      <div
-        className={`${pageBackgroundColor} sticky top-0 z-[30] flex ${
-          language == "english"
-            ? "flex-row"
-            : "flex-row-reverse"
-        } px-[15px] w-full h-[54px] items-center justify-between ${headerTextClass} transition-colors duration-200`}
-      >
+      <div className={`fixed ${isB ? "w-3/3 min-md:w-2/3" : "w-3/3"} h-[110px] z-[40] flex items-center justify-between px-[15px] ${headerTextClass}`}>
+        {/* Layer 1: soft blur across the whole header */}
         <div
-          className={`flex ${
-            language == "english"
-              ? "flex-row"
-              : "flex-row-reverse"
-          } items-center gap-[30px] ${headerTextClass}`}
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 backdrop-blur-[7px] transition-opacity duration-300 ease-out ${
+            isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+          }}
+        />
+      
+        {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 backdrop-blur-[3.5px] transition-opacity duration-300 ease-out ${
+            isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+            maskImage:
+              "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+          }}
+        />
+      
+        {/* Layer 3: dark (or white in light mode) gradient on top of the blur */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 bg-linear-to-b transition-opacity duration-300 ease-out ${
+            isDark
+              ? "from-[#000]/55 via-[#000]/20"
+              : "from-[#ffffff]/55 via-[#ffffff]/20"
+          } to-transparent ${
+            isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      
+        <div
+        onClick={()=>{isB && setActiveB(null); setIsS(false)}}
+          className={`
+           w-[40px] h-[40px] rounded-full ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}
+            z-[50] top-[14px] left-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-center px-[12.5px]`}
+        />
+      
+        <span className={`relative text-[17px] -mt-[41px] font-bold mx-auto `}>
+          Chat Settings
+        </span>
+      
+        <div
+          className={`${
+            isOpen2 == true ? ` min-w-[160px] h-auto px-[15px] py-[10px] rounded-2xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"} ` : `w-[85px] h-[40px] rounded-3xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}`
+          } transition-all duration-100 ease-in-out z-[50] top-[14px] right-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
         >
-          <button
-            type="button"
-            onClick={() => {setActiveB(null); setIsOpen2(false); }}
-            aria-label="Close"
-            className="flex items-center justify-center"
+          {!isOpen2 && <span
+            className={`transition-opacity duration-100 ${
+              isOpen2 ? "opacity-0" : "opacity-100"
+            } `}
           >
-            <X />
-          </button>
-
-          {language == "english" ? (
-            <span className="text-center text-[17px] font-semibold tracking-wider">
-              Chat Settings
-            </span>
-          ) : (
-            <span className="text-center text-[17px] font-semibold tracking-wider">
-              تنظیمات ظاهری
-            </span>
-          )}
+            <SearchIcon size={20} />
+          </span>}
+      
+          {!isOpen2 && <span
+            onClick={() => setIsOpen2(true)}
+            className={`transition-opacity duration-100 ${
+              isOpen2 ? "opacity-0" : "opacity-100"
+            } `}
+          >
+            <EllipsisVertical size={20} />
+          </span>}
+      
+          {isOpen2 && <div className={`flex gap-[10px] transition-opacity duration-100 w-full ${isOpen2 ? "opacity-100" : "opacity-0"} `} >
+               <LogOut size={22}/>
+               <span className="tracking-wide">Log Out</span>
+          </div>}
         </div>
-
-        <button
-          type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-label="More options"
-          className={headerTextClass}
-        >
-          <EllipsisVertical />
-        </button>
       </div>
+
+      <div
+            onClick={isOpen2 ? () => setIsOpen2(null) : undefined}
+            className={`fixed inset-0 z-[40] ${
+              isOpen2 ? "panels-a-backdrop-enter" : "panels-a-backdrop-exit"
+            }`}
+          />
 
       {/* Settings Content */}
 
-      <div className="relative mt-[6px] w-full px-[15px] pb-[15px]">
+      <div className="relative mt-[80px] w-full px-[15px] pb-[15px]">
         <div className="w-full overflow-hidden rounded-[15px]">
           {/* Message Text Size */}
 
@@ -1239,6 +1281,8 @@ export default function ChatSettings({
           </div>
         </div>
       </div>
+
+      
     </div>
   );
 }

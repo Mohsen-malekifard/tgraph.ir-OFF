@@ -25,7 +25,7 @@ import {
   Search,
   X,
 } from "lucide-react";
-import ChatSettings from "./ChatSettings-S-A";
+import ChatSettings from "./ChatSettings";
 
 export default function Settings({
   setActiveB,
@@ -40,6 +40,7 @@ export default function Settings({
 }) {
   const [isScrolled3, setIsScrolled3] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const isB = false;
 
   const isBlueTheme = theme === "blue";
 
@@ -129,13 +130,15 @@ export default function Settings({
   }}
 >
   <ChatSettings
-    setActiveB={setActiveB}
-    setIsS={setIsS}
+  isB={isB}
     theme={theme}
-    setTheme={setTheme}
-    isDark={isDark}
-    setIsDark={setIsDark}
-    language={language}
+                
+                setTheme={setTheme}
+                isDark={isDark}
+                setIsDark={setIsDark}
+                language={language}
+                setActiveB={setActiveB}
+                setIsS={setIsS}
   />
 </div>
 

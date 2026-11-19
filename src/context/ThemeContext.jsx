@@ -17,7 +17,7 @@ export function ThemeProvider({ children }) {
   const back = isDark
     ? {
         1: "bg-[#040404]",
-        2: "bg-[#202020]",
+        2: "bg-[#181818]",
       }
     : {
         1: "bg-[#ffffff]",

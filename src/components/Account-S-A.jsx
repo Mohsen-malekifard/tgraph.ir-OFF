@@ -1,52 +1,28 @@
 "use client";
 
+import { X, Check, UserPlus, LogOut } from "lucide-react";
 import { useState } from "react";
-
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  UserPlus,
-  LogOut,
-} from "lucide-react";
-
 import { useData } from "@/context/DataContext";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import {
   faPhone,
   faAt,
   faCakeCandles,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function Account_S_A({
-  setActiveB,
-  language,
-  theme,
-  isDark,
-}) {
+export default function Account({ setActiveB, language, theme, isDark }) {
   const { name, lastName, bio } = useData();
 
   const [newName, setNewName] = useState(name);
   const [newLastName, setNewLastName] = useState(lastName);
   const [newBio, setNewBio] = useState(bio);
+  const [divide, setDevide] = useState(70);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const [divide, setDevide] = useState(70 - (bio?.length || 0));
-
-  const isBlueTheme = theme === "blue";
   const isEnglish = language === "english";
+  const isBlueTheme = theme === "blue";
 
-  // Accent color
-  const accentColor = isBlueTheme
-    ? isDark
-      ? "#91a8ef"
-      : "#1278e6"
-    : isDark
-      ? "#f08080"
-      : "#d93636";
-
-  // Accent text
+  // Accent colors
   const accentTextClass = isBlueTheme
     ? isDark
       ? "text-[#91a8ef]"
@@ -55,7 +31,23 @@ export default function Account_S_A({
       ? "text-[#f08080]"
       : "text-[#d93636]";
 
-  // Main panel background
+  // Main text colors
+  const mainTextClass = isDark ? "text-white" : "text-[#252525]";
+
+  // Input text and cursor colors
+  const inputTextClass = isDark
+    ? "text-white caret-white"
+    : "text-[#252525] caret-[#252525]";
+
+  // Gray text: stronger contrast in light themes
+  const grayTextClass = isDark ? "text-gray-500" : "text-gray-700";
+
+  // Placeholder colors
+  const placeholderClass = isDark
+    ? "placeholder:text-gray-500"
+    : "placeholder:text-gray-600";
+
+  // Panel background
   const panelBackgroundClass = isBlueTheme
     ? isDark
       ? "bg-[#282C3F]"
@@ -64,7 +56,7 @@ export default function Account_S_A({
       ? "bg-[#252525]"
       : "bg-[#ffe0e0]";
 
-  // Header background
+  // Header background when scrolling
   const headerBackgroundClass = isBlueTheme
     ? isDark
       ? "bg-[#1d202e]"
@@ -73,7 +65,7 @@ export default function Account_S_A({
       ? "bg-[#181818]"
       : "bg-[#ec5454]";
 
-  // Divider color
+  // Divider colors
   const dividerBackgroundClass = isBlueTheme
     ? isDark
       ? "bg-[#303346]"
@@ -82,63 +74,24 @@ export default function Account_S_A({
       ? "bg-[#3a3030]"
       : "bg-[#efbcbc]";
 
-  // Main text color
-  const mainTextClass = isDark
-    ? "text-white"
-    : "text-[#252525]";
-
-  // Input text and cursor colors
-  const inputTextClass = isDark
-    ? "text-white caret-white"
-    : "text-[#252525] caret-[#252525]";
-
-  // Input placeholder colors
-  const placeholderClass = isDark
-    ? "placeholder:text-gray-500"
-    : "placeholder:text-gray-500";
-
-  // Handle profile information changes
-  const handleBioChange = (e) => {
-    const value = e.target.value;
-
-    setNewBio(value);
-    setDevide(70 - value.length);
-  };
-
-  // Detect whether profile information has changed
-  const hasChanges =
-    newName !== name ||
-    newLastName !== lastName ||
-    newBio !== bio;
-
   return (
     <div
-      className="
-        relative
-        h-screen
-        w-full
-        min-w-0
-        max-w-full
-        overflow-x-hidden
-        overflow-y-auto
-        overscroll-contain
-      "
+      onScroll={(e) => {
+        setIsScrolled(e.currentTarget.scrollTop > 10);
+      }}
+      className="h-screen w-full overflow-y-scroll overflow-x-hidden"
     >
       {/* Header */}
       <div
         className={`
-          sticky
-          top-0
-          z-[30]
           flex
           ${isEnglish ? "flex-row" : "flex-row-reverse"}
           px-[15px]
           w-full
           h-[54px]
-          shrink-0
           items-center
           justify-between
-          ${headerBackgroundClass}
+          ${isScrolled ? headerBackgroundClass : "bg-transparent"}
           transition-colors
           duration-200
         `}
@@ -149,28 +102,17 @@ export default function Account_S_A({
             ${isEnglish ? "flex-row" : "flex-row-reverse"}
             items-center
             gap-[30px]
-            text-white
+            ${mainTextClass}
           `}
         >
-          {isEnglish ? (
-            <button
-              type="button"
-              onClick={() => setActiveB("settings")}
-              aria-label="Back to settings"
-              className="flex items-center justify-center"
-            >
-              <ArrowLeft size={24} />
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setActiveB("settings")}
-              aria-label="بازگشت به تنظیمات"
-              className="flex items-center justify-center"
-            >
-              <ArrowRight size={24} />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setActiveB(null)}
+            aria-label={isEnglish ? "Close account" : "بستن حساب کاربری"}
+            className="flex items-center justify-center"
+          >
+            <X size={23} />
+          </button>
 
           <span className="text-[17px] font-semibold">
             {isEnglish ? "Account" : "حساب کاربری"}
@@ -178,15 +120,17 @@ export default function Account_S_A({
         </div>
 
         <span
-          aria-label={hasChanges ? "Unsaved changes" : "No changes"}
           className={`
-            flex
-            items-center
-            justify-center
-            text-white
+            ${mainTextClass}
             transition-opacity
             duration-200
-            ${hasChanges ? "opacity-100" : "opacity-0"}
+            ${
+              newName !== name ||
+              newLastName !== lastName ||
+              newBio !== bio
+                ? "opacity-100"
+                : "opacity-0"
+            }
           `}
         >
           <Check size={23} />
@@ -199,60 +143,50 @@ export default function Account_S_A({
           relative
           mx-[15px]
           mt-[15px]
-          flex
-          h-[155px]
           max-w-full
-          flex-col
           rounded-2xl
+          h-[155px]
           ${panelBackgroundClass}
           py-[15px]
+          flex
+          flex-col
           transition-colors
           duration-200
           ${isEnglish ? "items-start pl-[20px]" : "items-end pr-[20px]"}
         `}
       >
         <span
-          className={`
-            text-[16px]
-            font-semibold
-            ${accentTextClass}
-          `}
+          className={`font-semibold text-[16px] ${accentTextClass}`}
         >
           {isEnglish ? "Your name" : "نام شما"}
         </span>
 
-        <div className="mt-[-10px] flex w-full flex-col">
+        <div className="w-full flex flex-col -space-y-[10px] -mt-[10px]">
           <input
             maxLength={35}
             required
             type="text"
+            autoFocus
             autoComplete="off"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            placeholder={isEnglish ? "First name" : "نام"}
-            aria-label={isEnglish ? "First name" : "نام"}
+            placeholder="First name"
             className={`
-              mt-[10px]
-              h-[60px]
-              w-full
-              appearance-none
+              ${isEnglish ? "text-left" : "text-right"}
               border-0
               bg-transparent
-              outline-none
-              font-medium
-              ${isEnglish ? "text-left" : "text-right"}
               ${inputTextClass}
               ${placeholderClass}
+              font-medium
+              w-full
+              mt-[10px]
+              h-[60px]
+              appearance-none
+              outline-0
             `}
           />
 
-          <span
-            className={`
-              h-[1px]
-              w-full
-              ${dividerBackgroundClass}
-            `}
-          />
+          <span className={`w-full h-[1px] ${dividerBackgroundClass}`} />
 
           <input
             required
@@ -261,20 +195,19 @@ export default function Account_S_A({
             autoComplete="off"
             value={newLastName}
             onChange={(e) => setNewLastName(e.target.value)}
-            placeholder={isEnglish ? "Last name" : "نام خانوادگی"}
-            aria-label={isEnglish ? "Last name" : "نام خانوادگی"}
+            placeholder="Last name"
             className={`
-              mt-[10px]
-              h-[60px]
-              w-full
-              appearance-none
+              ${isEnglish ? "text-left" : "text-right"}
               border-0
               bg-transparent
-              outline-none
-              font-medium
-              ${isEnglish ? "text-left" : "text-right"}
               ${inputTextClass}
               ${placeholderClass}
+              font-medium
+              w-full
+              mt-[10px]
+              h-[60px]
+              appearance-none
+              outline-0
             `}
           />
         </div>
@@ -284,69 +217,72 @@ export default function Account_S_A({
       <div
         className={`
           relative
-          mx-[15px]
-          mt-[15px]
-          box-border
-          flex
           max-w-full
-          flex-col
+          mx-[15px]
           rounded-2xl
           ${panelBackgroundClass}
+          mt-[15px]
+          ${isEnglish ? "pl-[20px] items-start" : "pr-[20px] items-end"}
           py-[15px]
+          box-border
+          flex
+          flex-col
           transition-colors
           duration-200
-          ${isEnglish ? "items-start pl-[20px]" : "items-end pr-[20px]"}
         `}
       >
         <div
           className={`
-            flex
             w-full
+            flex
+            ${isEnglish ? "flex-row" : "flex-row-reverse"}
             items-center
             justify-between
-            ${isEnglish ? "flex-row" : "flex-row-reverse"}
           `}
         >
           <textarea
             required
+            dir="auto"
             maxLength={70}
             autoComplete="off"
-            dir="auto"
-            placeholder={isEnglish ? "Bio" : "معرفی شما"}
+            placeholder="bio"
             value={newBio}
-            onChange={handleBioChange}
-            aria-label={isEnglish ? "Biography" : "معرفی شما"}
+            onChange={(e) => {
+              setNewBio(e.target.value);
+              setDevide(70 - e.target.value.length);
+            }}
             className={`
-              mt-[5px]
-              flex
+              text-start
+              field-sizing-content
+              ${placeholderClass}
               basis-8/9
-              resize-none
-              flex-wrap
+              flex
               text-wrap
-              overflow-hidden
-              appearance-none
               border-0
               bg-transparent
-              font-medium
-              outline-none
-              field-sizing-content
               ${inputTextClass}
-              ${placeholderClass}
+              font-medium
+              w-full
+              mt-[5px]
+              flex-wrap
+              overflow-hidden
+              appearance-none
+              outline-0
+              resize-none
             `}
           />
 
           <span
             className={`
-              flex
-              basis-1/9
-              items-center
-              justify-center
-              tabular-nums
               ${
                 divide === 0
-                  ? "text-red-400"
+                  ? "text-red-500"
                   : mainTextClass
               }
+              basis-1/9
+              flex
+              items-center
+              justify-center
             `}
           >
             {divide}
@@ -356,38 +292,55 @@ export default function Account_S_A({
 
       {/* Bio Description */}
       {isEnglish ? (
-        <div className="ml-[20px] mt-[7px] text-[13.7px] font-normal text-gray-500">
+        <div
+          className={`
+            ml-[20px]
+            mt-[7px]
+            text-[13.7px]
+            font-normal
+            ${grayTextClass}
+          `}
+        >
           A few words about you.
         </div>
       ) : (
-        <div className="mr-[20px] mt-[7px] text-right text-[13.7px] font-normal text-gray-500">
-          عبارت یا جمله‌ای برای معرفی شما
+        <div
+          className={`
+            mr-[20px]
+            text-right
+            mt-[7px]
+            text-[13.7px]
+            font-normal
+            ${grayTextClass}
+          `}
+        >
+          عبارت یا جمله ای برای معرفی شما
         </div>
       )}
 
       {/* Your Info */}
       <div
         className={`
-          mx-[15px]
-          mt-[7px]
-          box-border
-          flex
-          h-auto
-          max-w-full
-          flex-col
-          rounded-2xl
           ${panelBackgroundClass}
+          max-w-full
+          rounded-2xl
+          h-auto
           py-[7px]
+          flex
+          flex-col
+          ${isEnglish ? "items-start" : "items-end"}
+          mt-[7px]
+          mx-[15px]
+          box-border
           transition-colors
           duration-200
-          ${isEnglish ? "items-start" : "items-end"}
         `}
       >
         <span
           className={`
-            mt-[5px]
-            text-[15px]
             font-semibold
+            text-[15px]
+            mt-[5px]
             ${accentTextClass}
             ${isEnglish ? "ml-[20px]" : "mr-[20px]"}
           `}
@@ -399,15 +352,15 @@ export default function Account_S_A({
         <div
           className={`
             flex
+            ${isEnglish ? "flex-row" : "flex-row-reverse"}
+            gap-[17px]
+            items-center
             h-[57px]
             w-full
-            items-center
-            gap-[17px]
             px-[20px]
-            ${isEnglish ? "flex-row" : "flex-row-reverse"}
           `}
         >
-          <div className="flex h-[27px] w-[27px] shrink-0 items-center justify-center rounded-lg bg-green-400 text-white outline-[0.5px] -outline-offset-1 outline-white/60">
+          <div className="w-[27px] h-[27px] shrink-0 rounded-lg bg-green-400 outline-[0.5px] outline-white/60 -outline-offset-1 flex items-center justify-center text-white">
             <FontAwesomeIcon icon={faPhone} />
           </div>
 
@@ -415,9 +368,9 @@ export default function Account_S_A({
             <span
               dir="ltr"
               className={`
-                text-[15px]
-                font-medium
                 ${mainTextClass}
+                font-medium
+                text-[15px]
                 ${isEnglish ? "text-left" : "text-right"}
               `}
             >
@@ -426,15 +379,15 @@ export default function Account_S_A({
 
             <span
               className={`
-                text-[12.5px]
+                ${grayTextClass}
                 font-normal
-                text-gray-500
+                text-[12.5px]
                 ${isEnglish ? "text-left" : "text-right"}
               `}
             >
               {isEnglish
                 ? "Tap to change phone number"
-                : "برای تغییر شماره همراه ضربه بزنید"}
+                : "ضربه برای تغییر شماره همراه"}
             </span>
           </div>
         </div>
@@ -445,15 +398,16 @@ export default function Account_S_A({
           onClick={() => setActiveB("username")}
           className={`
             flex
+            ${isEnglish ? "flex-row" : "flex-row-reverse"}
+            gap-[17px]
+            items-center
             h-[57px]
             w-full
-            items-center
-            gap-[17px]
             px-[20px]
-            ${isEnglish ? "flex-row" : "flex-row-reverse"}
+            text-left
           `}
         >
-          <div className="flex h-[27px] w-[27px] shrink-0 items-center justify-center rounded-lg bg-yellow-400 text-white outline-[0.5px] -outline-offset-1 outline-white/60">
+          <div className="w-[27px] h-[27px] shrink-0 rounded-lg bg-yellow-400 outline-[0.5px] outline-white/60 -outline-offset-1 flex items-center justify-center text-white">
             <FontAwesomeIcon icon={faAt} />
           </div>
 
@@ -461,10 +415,9 @@ export default function Account_S_A({
             <span
               dir="ltr"
               className={`
-                text-[15px]
-                font-medium
                 ${mainTextClass}
-                ${isEnglish ? "text-left" : "text-right"}
+                font-medium
+                text-[15px]
               `}
             >
               @Jjjscfff
@@ -472,9 +425,9 @@ export default function Account_S_A({
 
             <span
               className={`
-                text-[12.5px]
+                ${grayTextClass}
                 font-normal
-                text-gray-500
+                text-[12.5px]
                 ${isEnglish ? "text-left" : "text-right"}
               `}
             >
@@ -487,15 +440,15 @@ export default function Account_S_A({
         <div
           className={`
             flex
+            ${isEnglish ? "flex-row" : "flex-row-reverse"}
+            gap-[17px]
+            items-center
             h-[57px]
             w-full
-            items-center
-            gap-[17px]
             px-[20px]
-            ${isEnglish ? "flex-row" : "flex-row-reverse"}
           `}
         >
-          <div className="flex h-[27px] w-[27px] shrink-0 items-center justify-center rounded-lg bg-blue-400 text-white outline-[0.5px] -outline-offset-1 outline-white/60">
+          <div className="w-[27px] h-[27px] shrink-0 rounded-lg bg-blue-400 outline-[0.5px] outline-white/60 -outline-offset-1 flex items-center justify-center text-white">
             <FontAwesomeIcon icon={faCakeCandles} />
           </div>
 
@@ -503,9 +456,9 @@ export default function Account_S_A({
             <span
               dir="ltr"
               className={`
-                text-[15px]
-                font-medium
                 ${mainTextClass}
+                font-medium
+                text-[15px]
                 ${isEnglish ? "text-left" : "text-right"}
               `}
             >
@@ -514,9 +467,9 @@ export default function Account_S_A({
 
             <span
               className={`
-                text-[12.5px]
+                ${grayTextClass}
                 font-normal
-                text-gray-500
+                text-[12.5px]
                 ${isEnglish ? "text-left" : "text-right"}
               `}
             >
@@ -529,16 +482,17 @@ export default function Account_S_A({
       {/* Account Actions */}
       <div
         className={`
-          mx-[15px]
-          mt-[15px]
-          mb-[20px]
-          flex
-          h-auto
-          max-w-full
-          flex-col
-          rounded-2xl
           ${panelBackgroundClass}
+          max-w-full
+          rounded-2xl
+          h-auto
           py-[7px]
+          flex
+          flex-col
+          mt-[15px]
+          mx-[15px]
+          mb-[20px]
+          box-border
           transition-colors
           duration-200
         `}
@@ -548,21 +502,18 @@ export default function Account_S_A({
           type="button"
           className={`
             flex
+            ${isEnglish ? "flex-row" : "flex-row-reverse"}
+            gap-[17px]
+            items-center
             h-[57px]
             w-full
-            items-center
-            gap-[17px]
             px-[20px]
-            transition-colors
-            duration-200
-            hover:opacity-80
-            ${isEnglish ? "flex-row" : "flex-row-reverse"}
             ${accentTextClass}
           `}
         >
           <UserPlus size={22.5} />
 
-          <span className="text-[15px] font-semibold">
+          <span className="font-semibold text-[15px]">
             {isEnglish ? "Add Account" : "افزودن حساب"}
           </span>
         </button>
@@ -572,21 +523,18 @@ export default function Account_S_A({
           type="button"
           className={`
             flex
+            ${isEnglish ? "flex-row" : "flex-row-reverse"}
+            gap-[17px]
+            items-center
             h-[57px]
             w-full
-            items-center
-            gap-[17px]
             px-[20px]
             text-red-500
-            transition-colors
-            duration-200
-            hover:opacity-80
-            ${isEnglish ? "flex-row" : "flex-row-reverse"}
           `}
         >
           <LogOut size={22.5} />
 
-          <span className="text-[15px] font-semibold">
+          <span className="font-semibold text-[15px]">
             {isEnglish ? "Log Out" : "خروج از حساب"}
           </span>
         </button>

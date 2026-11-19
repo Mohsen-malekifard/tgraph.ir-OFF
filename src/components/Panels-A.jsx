@@ -200,6 +200,8 @@ export default function PanelsA() {
 
             {activeA === "settings" && (
               <Settings
+              setTheme={setTheme}
+              setIsDark={setIsDark}
                 theme={theme}
                 isDark={isDark}
                 language={language}

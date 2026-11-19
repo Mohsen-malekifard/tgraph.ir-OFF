@@ -352,6 +352,8 @@ export default function PanelsB({
   const chatScrollRef = useRef(null);
   const messageInputRef = useRef(null);
 
+  const isB = true;
+
   const messageSelectionRef = useRef({
     start: 0,
     end: 0,
@@ -1390,6 +1392,7 @@ export default function PanelsB({
           >
             {activeB === "account" && (
               <Account
+              isB={isB}
                 theme={theme}
                  setIsOpen2={setIsOpen2}
                 isDark={isDark}
@@ -1410,6 +1413,7 @@ export default function PanelsB({
 
             {activeB === "chat-settings" && (
               <ChatSettings
+              isB={isB}
                 theme={theme}
                  setIsOpen2={setIsOpen2}
                 setTheme={setTheme}
