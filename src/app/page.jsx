@@ -304,6 +304,13 @@ const categories = [
   "رسانه محور",
 ];
 
+// تنظیمات انیمیشن انتقال بین صفحات پایین (چت‌ها / مخاطبین / تنظیمات / پروفایل)
+const PAGE_TRANSITION = {
+  duration: 440, // مدت زمان ورود صفحه (ms)
+  distance: 32, // فاصلهٔ جابه‌جایی افقی (px)
+  easing: "cubic-bezier(0.22, 1, 0.36, 1)", // ease-out نرم
+};
+
 function mergeIds(list, ids) {
   return Array.from(new Set([...list, ...ids]));
 }
@@ -637,9 +644,11 @@ useEffect(() => {
 
   const contactsRef = useRef([]);
 
+  // انیمیشن انتقال صفحات پایین
   const categoryPanelRef = useRef(null);
-  const categoryTransitionDirection = useRef(1);
-  const isCategoryTransitioning = useRef(false);
+  const categoryTransitionDirection = useRef(1); // جهت بصری ورود: +1 از راست، -1 از چپ
+  const categoryAnimationRef = useRef(null); // انیمیشن در حال اجرا
+  const prevCategory2Ref = useRef(0); // صفحهٔ قبلی برای تشخیص تغییر واقعی
 
   const loadConversations = useCallback(async () => {
     setConversations(OFFLINE_CONVERSATIONS);
@@ -748,105 +757,97 @@ const chatListBackgroundClass = isDark ? "bg-[#181818]" : "bg-[#fff]";
 
 const chatListBackgroundColor = isDark ? "bg-[#202020]" : "bg-[#fff]";
 
+  // تغییر صفحهٔ پایین: state بلافاصله عوض می‌شود (بدون انتظار برای انیمیشن خروج
+  // و بدون نادیده‌گرفتن کلیک‌های سریع)؛ خود انیمیشن در useLayoutEffect اجرا می‌شود.
   const handleCategoryChange = (index) => {
-  if (index === activeCategory2) {
-    return;
-  }
-
-  if (lowPerformanceMode) {
-    const panel = categoryPanelRef.current;
-
-    if (panel) {
-      panel.getAnimations().forEach((animation) => {
-        animation.cancel();
-      });
+    if (index === activeCategory2) {
+      return;
     }
 
-    isCategoryTransitioning.current = false;
-    setActiveCategory2(index);
-    return;
-  }
+    // صفحهٔ جدید از سمتی وارد می‌شود که تب آن در نوار پایین قرار دارد.
+    // در حالت انگلیسی تب‌ها چپ‌به‌راست‌اند و در حالت فارسی راست‌به‌چپ.
+    const movingForward = index > activeCategory2;
+    const rtl = language !== "english";
 
-  if (isCategoryTransitioning.current) {
-    return;
-  }
+    categoryTransitionDirection.current =
+      (movingForward ? 1 : -1) * (rtl ? -1 : 1);
 
-  const panel = categoryPanelRef.current;
-
-  if (!panel) {
-    setActiveCategory2(index);
-    return;
-  }
-
-  const direction = index > activeCategory2 ? -1 : 1;
-
-  categoryTransitionDirection.current = direction;
-  isCategoryTransitioning.current = true;
-
-  const exitAnimation = panel.animate(
-    [
-      {
-        transform: "translateX(0)",
-        opacity: 1,
-      },
-      {
-        transform: `translateX(${-direction * 42}px)`,
-        opacity: 0.92,
-      },
-    ],
-    {
-      duration: 100,
-      easing: "cubic-bezier(0.4, 0, 1, 1)",
-      fill: "forwards",
-    }
-  );
-
-  exitAnimation.onfinish = () => {
     setActiveCategory2(index);
   };
-};
 
   useLayoutEffect(() => {
-    if (!isCategoryTransitioning.current) {
+    // فقط وقتی صفحه واقعاً تغییر کرده باشد انیمیشن اجرا شود (نه در اولین رندر)
+    if (prevCategory2Ref.current === activeCategory2) {
       return;
     }
+
+    prevCategory2Ref.current = activeCategory2;
 
     const panel = categoryPanelRef.current;
 
-    if (!panel) {
-      isCategoryTransitioning.current = false;
+    if (!panel || typeof panel.animate !== "function") {
       return;
     }
 
-    panel.getAnimations().forEach((animation) => {
-      animation.cancel();
-    });
+    // اگر انیمیشن قبلی هنوز در حال اجراست (کلیک سریع)، قطعش کن و از نو شروع کن
+    if (categoryAnimationRef.current) {
+      categoryAnimationRef.current.cancel();
+      categoryAnimationRef.current = null;
+    }
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    // در دستگاه‌های ضعیف یا با تنظیم کاهش حرکت، بدون انیمیشن عوض شود
+    if (lowPerformanceMode || prefersReducedMotion) {
+      return;
+    }
 
     const direction = categoryTransitionDirection.current;
+    const offset = direction * PAGE_TRANSITION.distance;
 
-    const enterAnimation = panel.animate(
+    const animation = panel.animate(
       [
         {
-          transform: `translateX(${direction * 42}px)`,
-          opacity: 0.92,
+          opacity: 0,
+          transform: `translate3d(${offset}px, 0, 0)`,
         },
         {
-          transform: "translateX(0)",
+          // محو شدن زودتر از حرکت کامل می‌شود تا صفحه سریع‌تر خوانا شود
           opacity: 1,
+          offset: 0.55,
+        },
+        {
+          opacity: 1,
+          transform: "translate3d(0, 0, 0)",
         },
       ],
       {
-        duration: 260,
-        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-        fill: "both",
+        duration: PAGE_TRANSITION.duration,
+        easing: PAGE_TRANSITION.easing,
+        fill: "none",
       }
     );
 
-    enterAnimation.onfinish = () => {
-      isCategoryTransitioning.current = false;
-      enterAnimation.cancel();
+    categoryAnimationRef.current = animation;
+
+    const cleanup = () => {
+      if (categoryAnimationRef.current === animation) {
+        categoryAnimationRef.current = null;
+      }
     };
-  }, [activeCategory2]);
+
+    animation.onfinish = cleanup;
+    animation.oncancel = cleanup;
+  }, [activeCategory2, lowPerformanceMode]);
+
+  // پاکسازی انیمیشن هنگام unmount
+  useEffect(() => {
+    return () => {
+      categoryAnimationRef.current?.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     const updateIndicator = () => {
