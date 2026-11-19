@@ -1,8 +1,9 @@
 "use client";
 
-import { X, Check, UserPlus, LogOut } from "lucide-react";
+import { X, Check, UserPlus, LogOut, EllipsisVertical, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { useData } from "@/context/DataContext";
+import { useTheme } from "@/context/ThemeContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPhone,
@@ -10,14 +11,15 @@ import {
   faCakeCandles,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function Account({ setActiveB, language, theme, isDark }) {
+export default function Account({ setActiveB, language, theme, isDark, isB }) {
   const { name, lastName, bio } = useData();
-
+  const {back} = useTheme();
   const [newName, setNewName] = useState(name);
   const [newLastName, setNewLastName] = useState(lastName);
   const [newBio, setNewBio] = useState(bio);
   const [divide, setDevide] = useState(70);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
 
   const isEnglish = language === "english";
   const isBlueTheme = theme === "blue";
@@ -74,69 +76,100 @@ export default function Account({ setActiveB, language, theme, isDark }) {
       ? "bg-[#3a3030]"
       : "bg-[#efbcbc]";
 
+      const headerTextClass = isDark
+    ? "text-white"
+    : "text-[#252525]";
+
   return (
     <div
       onScroll={(e) => {
         setIsScrolled(e.currentTarget.scrollTop > 10);
       }}
-      className="h-screen w-full overflow-y-scroll overflow-x-hidden"
+      className={`h-screen w-full overflow-y-scroll overflow-x-hidden ${back[1]}`}
     >
-      {/* Header */}
-      <div
-        className={`
-          flex
-          ${isEnglish ? "flex-row" : "flex-row-reverse"}
-          px-[15px]
-          w-full
-          h-[54px]
-          items-center
-          justify-between
-          ${isScrolled ? headerBackgroundClass : "bg-transparent"}
-          transition-colors
-          duration-200
-        `}
-      >
-        <div
-          className={`
-            flex
-            ${isEnglish ? "flex-row" : "flex-row-reverse"}
-            items-center
-            gap-[30px]
-            ${mainTextClass}
-          `}
-        >
-          <button
-            type="button"
-            onClick={() => setActiveB(null)}
-            aria-label={isEnglish ? "Close account" : "بستن حساب کاربری"}
-            className="flex items-center justify-center"
-          >
-            <X size={23} />
-          </button>
-
-          <span className="text-[17px] font-semibold">
-            {isEnglish ? "Account" : "حساب کاربری"}
-          </span>
-        </div>
-
-        <span
-          className={`
-            ${mainTextClass}
-            transition-opacity
-            duration-200
-            ${
-              newName !== name ||
-              newLastName !== lastName ||
-              newBio !== bio
-                ? "opacity-100"
-                : "opacity-0"
-            }
-          `}
-        >
-          <Check size={23} />
-        </span>
-      </div>
-
+       {/* Header */}
+      
+            <div className={`fixed ${isB ? "w-3/3 min-md:w-2/3" : "w-3/3"} h-[110px] z-[40] flex items-center justify-between px-[15px] ${headerTextClass}`}>
+              {/* Layer 1: soft blur across the whole header */}
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 backdrop-blur-[7px] transition-opacity duration-300 ease-out ${
+                  isScrolled ? "opacity-100" : "opacity-0"
+                }`}
+                style={{
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+                  maskImage:
+                    "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+                }}
+              />
+            
+              {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 backdrop-blur-[3.5px] transition-opacity duration-300 ease-out ${
+                  isScrolled ? "opacity-100" : "opacity-0"
+                }`}
+                style={{
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+                  maskImage:
+                    "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+                }}
+              />
+            
+              {/* Layer 3: dark (or white in light mode) gradient on top of the blur */}
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 bg-linear-to-b transition-opacity duration-300 ease-out ${
+                  isDark
+                    ? "from-[#000]/55 via-[#000]/20"
+                    : "from-[#ffffff]/55 via-[#ffffff]/20"
+                } to-transparent ${
+                  isScrolled ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            
+              <div
+              onClick={()=>setActiveB(null)}
+                className={`
+                 w-[40px] h-[40px] rounded-full ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}
+                  z-[50] top-[14px] left-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-center px-[12.5px]`}
+              />
+            
+              <span className={`relative text-[17px] -mt-[41px] font-bold mx-auto `}>
+                Account
+              </span>
+            
+              <div
+                className={`${
+                  isOpen2 == true ? ` min-w-[160px] h-auto px-[15px] py-[10px] rounded-2xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"} ` : `w-[85px] h-[40px] rounded-3xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}`
+                } transition-all duration-100 ease-in-out z-[50] top-[14px] right-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
+              >
+                {!isOpen2 && <span
+                  className={`transition-opacity duration-100 ${
+                    isOpen2 ? "opacity-0" : "opacity-100"
+                  } `}
+                >
+                  <SearchIcon size={20} />
+                </span>}
+            
+                {!isOpen2 && <span
+                  onClick={() => setIsOpen2(true)}
+                  className={`transition-opacity duration-100 ${
+                    isOpen2 ? "opacity-0" : "opacity-100"
+                  } `}
+                >
+                  <EllipsisVertical size={20} />
+                </span>}
+            
+                {isOpen2 && <div className={`flex gap-[10px] transition-opacity duration-100 w-full ${isOpen2 ? "opacity-100" : "opacity-0"} `} >
+                     <LogOut size={22}/>
+                     <span className="tracking-wide">Log Out</span>
+                </div>}
+              </div>
+            </div>
+<div className="mt-[80px]">
       {/* Name */}
       <div
         className={`
@@ -146,7 +179,7 @@ export default function Account({ setActiveB, language, theme, isDark }) {
           max-w-full
           rounded-2xl
           h-[155px]
-          ${panelBackgroundClass}
+          ${back[2]}
           py-[15px]
           flex
           flex-col
@@ -186,7 +219,7 @@ export default function Account({ setActiveB, language, theme, isDark }) {
             `}
           />
 
-          <span className={`w-full h-[1px] ${dividerBackgroundClass}`} />
+          <span className={`w-full h-[1px] ${isDark ? "bg-[#040404]" : "bg-[#cfcece]"}`} />
 
           <input
             required
@@ -220,7 +253,7 @@ export default function Account({ setActiveB, language, theme, isDark }) {
           max-w-full
           mx-[15px]
           rounded-2xl
-          ${panelBackgroundClass}
+          ${back[2]}
           mt-[15px]
           ${isEnglish ? "pl-[20px] items-start" : "pr-[20px] items-end"}
           py-[15px]
@@ -321,7 +354,7 @@ export default function Account({ setActiveB, language, theme, isDark }) {
       {/* Your Info */}
       <div
         className={`
-          ${panelBackgroundClass}
+          ${back[2]}
           max-w-full
           rounded-2xl
           h-auto
@@ -482,7 +515,7 @@ export default function Account({ setActiveB, language, theme, isDark }) {
       {/* Account Actions */}
       <div
         className={`
-          ${panelBackgroundClass}
+          ${back[2]}
           max-w-full
           rounded-2xl
           h-auto
@@ -539,6 +572,7 @@ export default function Account({ setActiveB, language, theme, isDark }) {
           </span>
         </button>
       </div>
+    </div>
     </div>
   );
 }
