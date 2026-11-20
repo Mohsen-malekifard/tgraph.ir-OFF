@@ -3625,21 +3625,6 @@ const filteredChats = useMemo(() => {
     color: var(--app-theme-accent);
   }
 
-  /* =====================================
-     LOW PERFORMANCE MODE
-  ===================================== */
-
-  [data-performance="low"] .backdrop-blur-md,
-  [data-performance="low"] .backdrop-blur-xl,
-  [data-performance="low"] .backdrop-blur-2xl,
-  [data-performance="low"] .backdrop-saturate-150 {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-
-  [data-performance="low"] [class*="transition-"] {
-    transition-duration: 1ms !important;
-  }
 
   /* =====================================
      REDUCED MOTION
