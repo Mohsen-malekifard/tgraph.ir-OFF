@@ -3630,12 +3630,6 @@ const filteredChats = useMemo(() => {
      REDUCED MOTION
   ===================================== */
 
-  @media (prefers-reduced-motion: reduce) {
-    [data-performance] [class*="transition-"] {
-      transition-duration: 1ms !important;
-    }
-  }
-
   @keyframes panelsAEnter {
           from {
             opacity: 0;
