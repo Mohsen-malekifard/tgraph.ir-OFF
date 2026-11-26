@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useRef, useState } from "react";
@@ -6,6 +7,7 @@ import { useB } from "@/context/BContext";
 import { usePV } from "@/context/PVContext";
 import { useChat } from "@/context/ChatContext";
 import { useData } from "@/context/DataContext";
+import { useTheme } from "@/context/ThemeContext";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -15,14 +17,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
-  ArrowLeft,
-  ArrowRight,
   Check,
-  Clock,
   QrCode,
-  Search,
+  SearchIcon,
   UserPlus,
-  X,
+  EllipsisVertical,
+  LogOut,
 } from "lucide-react";
 
 import { apiFetch } from "@/lib/api";
@@ -97,19 +97,37 @@ function OutlinedField({
     <div
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
-      className={`relative flex h-[50px] items-center rounded-xl border transition-colors duration-150 ${
-        focused
-          ? `${palette.accentText} ${palette.accentBorder} shadow-[inset_0_0_0_1px_currentColor]`
-          : "border-white/15 text-white/55"
-      }`}
+      className={`
+        relative
+        flex
+        h-[50px]
+        items-center
+        rounded-xl
+        border
+        transition-colors
+        duration-150
+        ${
+          focused
+            ? `${palette.accentText} ${palette.accentBorder} shadow-[inset_0_0_0_1px_currentColor]`
+            : `border-white/15 ${palette.mutedText}`
+        }
+      `}
     >
       <label
         htmlFor={id}
-        className={`pointer-events-none absolute z-10 whitespace-nowrap transition-all duration-150 ${
-          floating
-            ? `-top-[10px] start-[11px] px-[4px] text-[13px] leading-[18px] ${palette.sheet}`
-            : "start-[16px] top-1/2 -translate-y-1/2 text-[16px]"
-        }`}
+        className={`
+          pointer-events-none
+          absolute
+          z-10
+          whitespace-nowrap
+          transition-all
+          duration-150
+          ${
+            floating
+              ? `-top-[10px] start-[11px] px-[4px] text-[13px] leading-[18px] ${palette.sheet}`
+              : "start-[16px] top-1/2 -translate-y-1/2 text-[16px]"
+          }
+        `}
       >
         {label}
       </label>
@@ -157,11 +175,92 @@ export default function NewMessage({
 }) {
   const isEnglish = language === "english";
 
-  const palette = getPalette(theme, isDark);
+  const { back } = useTheme();
+
+  /*
+  |--------------------------------------------------------------------------
+  | Theme Colors - Same As Settings
+  |--------------------------------------------------------------------------
+  */
+
+  const isBlueTheme = theme === "blue";
+
+  const basePalette = getPalette(theme, isDark);
+
+  const accentTextClass = isBlueTheme
+    ? isDark
+      ? "text-[#91a8ef]"
+      : "text-[#1278e6]"
+    : isDark
+      ? "text-[#f08080]"
+      : "text-[#d93636]";
+
+  const accentBorderClass = isBlueTheme
+    ? isDark
+      ? "border-[#91a8ef]"
+      : "border-[#1278e6]"
+    : isDark
+      ? "border-[#f08080]"
+      : "border-[#d93636]";
+
+  const accentFillClass = isBlueTheme
+    ? isDark
+      ? "bg-[#91a8ef]"
+      : "bg-[#1278e6]"
+    : isDark
+      ? "bg-[#f08080]"
+      : "bg-[#d93636]";
+
+  const textPrimaryClass = isDark
+    ? "text-white"
+    : isBlueTheme
+      ? "text-[#253651]"
+      : "text-[#4b2929]";
+
+  const textSecondaryClass = isDark
+    ? "text-gray-400"
+    : isBlueTheme
+      ? "text-[#64748b]"
+      : "text-[#936565]";
+
+  const headerTextClass = textPrimaryClass;
+
+  const headerIconClass = isDark
+    ? "text-white/80"
+    : accentTextClass;
+
+  const pageHex = isBlueTheme
+    ? isDark
+      ? "#1D202E"
+      : "#edf4ff"
+    : isDark
+      ? "#181818"
+      : "#fff1f1";
+
+  /*
+  |--------------------------------------------------------------------------
+  | Shared Palette
+  |--------------------------------------------------------------------------
+  */
+
+  const palette = {
+    ...basePalette,
+
+    accentText: accentTextClass,
+    accentBorder: accentBorderClass,
+    accentFill: accentFillClass,
+
+    mutedText: textSecondaryClass,
+
+    raised: back[2],
+    sheet: back[2],
+
+    pageHex,
+  };
+
+  const [isOpen2, setIsOpen2] = useState(false);
 
   const rowDir = isEnglish ? "flex-row" : "flex-row-reverse";
-
-  const BackIcon = isEnglish ? ArrowLeft : ArrowRight;
 
   const slideFrom = getSlideSide(language);
 
@@ -271,10 +370,7 @@ export default function NewMessage({
       );
     }
 
-    const category =
-      type === "group"
-        ? "Group"
-        : "Channel";
+    const category = type === "group" ? "Group" : "Channel";
 
     const selectedChat = {
       title: conversation.title || fallbackTitle,
@@ -322,11 +418,6 @@ export default function NewMessage({
 
     setActiveB("chat");
 
-    /*
-     * Refresh the main list after the server has successfully created
-     * the conversation. The main page listens for this event.
-     */
-
     window.dispatchEvent(
       new Event("telegraph:conversations:refresh")
     );
@@ -364,10 +455,12 @@ export default function NewMessage({
     const ownPhoneKey = getPhoneKey(currentUserMobile);
 
     const uniqueMembers = [];
+
     const seenPhones = new Set();
 
     for (const member of members) {
       const phone = normalizePhone(member?.mobile);
+
       const phoneKey = getPhoneKey(phone);
 
       if (!phone || !phoneKey) {
@@ -384,6 +477,7 @@ export default function NewMessage({
 
       if (!seenPhones.has(phoneKey)) {
         seenPhones.add(phoneKey);
+
         uniqueMembers.push({
           ...member,
           mobile: phone,
@@ -399,11 +493,6 @@ export default function NewMessage({
           : "هیچ عضو دیگری انتخاب نشده است."
       );
     }
-
-    /*
-     * Resolve contacts in small batches to avoid sending a large burst
-     * of lookup requests to the API.
-     */
 
     const userIds = [];
 
@@ -458,9 +547,7 @@ export default function NewMessage({
       userIds.push(...results);
     }
 
-    return [
-      ...new Set(userIds),
-    ];
+    return [...new Set(userIds)];
   }
 
   /*
@@ -949,7 +1036,13 @@ export default function NewMessage({
       <>
         {contactsLoading && (
           <div
-            className="w-full px-[20px] py-[12px] text-[14px] text-gray-400"
+            className={`
+              w-full
+              px-[20px]
+              py-[12px]
+              text-[14px]
+              ${textSecondaryClass}
+            `}
             dir={isEnglish ? "ltr" : "rtl"}
           >
             {isEnglish
@@ -961,7 +1054,16 @@ export default function NewMessage({
         {contactError && (
           <div
             role="alert"
-            className="mx-[15px] my-[10px] rounded-xl bg-red-500/10 px-[12px] py-[10px] text-[13px] text-red-300"
+            className={`
+              mx-[15px]
+              my-[10px]
+              rounded-xl
+              bg-red-500/10
+              px-[12px]
+              py-[10px]
+              text-[13px]
+              ${textSecondaryClass}
+            `}
             dir={isEnglish ? "ltr" : "rtl"}
           >
             {contactError}
@@ -988,218 +1090,457 @@ export default function NewMessage({
 
   /*
   |--------------------------------------------------------------------------
+  | Scroll
+  |--------------------------------------------------------------------------
+  */
+
+  const handleScroll = (event) => {
+    setIsScrolled2(event.currentTarget.scrollTop > 10);
+  };
+
+  /*
+  |--------------------------------------------------------------------------
   | Render
   |--------------------------------------------------------------------------
   */
 
   return (
     <>
-      <div
-        onScroll={(e) => {
-          setIsScrolled2(e.currentTarget.scrollTop > 10);
-        }}
-        className="scrollbar-none overflow-y-scroll pb-[90px]"
+       <div
+        onScroll={handleScroll}
+        className={`
+          relative
+          ${back[1]}
+        h-screen
+          w-full
+          min-w-0
+          max-w-full
+          overflow-x-hidden
+          overflow-y-auto
+          overscroll-contain
+          scrollbar-none
+          pb-[200px]
+          transition-colors
+          duration-200
+        `}
       >
-        {/* Header */}
 
         <div
-          className={`relative z-30 h-[96px] w-full overflow-hidden ${palette.header}`}
+          className={`
+            fixed
+            inset-x-0
+            top-0
+            w-full
+            h-[110px]
+            z-[40]
+            flex
+            items-center
+            justify-between
+            px-[15px]
+            ${headerTextClass}
+          `}
         >
+          {/* Layer 1: soft blur across the whole header */}
+
           <div
-            className={`${
-              isScrolled2 ? "bg-[#31364d]" : ""
-            } fixed z-[60] flex h-[48px] w-full items-center justify-between px-4 transition-colors duration-200 ${rowDir}`}
-          >
-            <div className={`flex items-center gap-[40px] ${rowDir}`}>
-              <button
-                type="button"
-                onClick={() => setActiveA(null)}
-                aria-label={isEnglish ? "Back" : "بازگشت"}
-                className="flex cursor-pointer items-center justify-center text-white"
-              >
-                <BackIcon size={26} />
-              </button>
+            aria-hidden="true"
+            className={`
+              pointer-events-none
+              absolute
+              inset-0
+              backdrop-blur-[7px]
+              transition-opacity
+              duration-300
+              ease-out
+              ${isScrolled2 ? "opacity-100" : "opacity-0"}
+            `}
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+            }}
+          />
 
-              <h1 className="text-[20px] font-semibold leading-none tracking-tight text-white">
-                {isEnglish ? "New Message" : "مکالمه جدید"}
-              </h1>
-            </div>
+          {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
 
-            <button
-              type="button"
-              onClick={() => setSorted((previous) => !previous)}
-              aria-label={
-                sorted
-                  ? isEnglish
-                    ? "Sort by last seen time"
-                    : "مرتب‌سازی بر اساس آخرین بازدید"
-                  : isEnglish
-                    ? "Sort contacts alphabetically"
-                    : "مرتب‌سازی الفبایی مخاطبین"
+          <div
+            aria-hidden="true"
+            className={`
+              pointer-events-none
+              absolute
+              inset-0
+              backdrop-blur-[3.5px]
+              transition-opacity
+              duration-300
+              ease-out
+              ${isScrolled2 ? "opacity-100" : "opacity-0"}
+            `}
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+              maskImage:
+                "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+            }}
+          />
+
+          {/* Layer 3: dark (or white in light mode) gradient on top of the blur */}
+
+          <div
+            aria-hidden="true"
+            className={`
+              pointer-events-none
+              absolute
+              inset-0
+              bg-linear-to-b
+              transition-opacity
+              duration-300
+              ease-out
+              ${
+                isDark
+                  ? "from-[#000]/55 via-[#000]/20"
+                  : "from-[#ffffff]/55 via-[#ffffff]/20"
               }
-              className="flex cursor-pointer items-center justify-center text-white/70"
-            >
-              {sorted
-                ? <Clock size={22} />
-                : <SortByNameIcon size={26} />}
-            </button>
-          </div>
+              to-transparent
+              ${isScrolled2 ? "opacity-100" : "opacity-0"}
+            `}
+          />
 
-          {/* Search */}
+          {/* Back Button */}
 
-          <div className="absolute bottom-[7px] left-0 z-[50] flex w-full flex-col px-[12px]">
-            <div
-              className={`relative flex h-[40px] w-full items-center gap-[10px] rounded-full bg-white/10 px-[15px] ${rowDir}`}
-            >
-              <span className="text-center text-gray-400">
-                <Search size={20} />
-              </span>
+          <div
+          onClick={()=>setActiveA(null)}
+            className={`
+              w-[40px]
+              h-[40px]
+              rounded-full
+              ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}
+              z-[50]
+              top-[14px]
+              left-[15px]
+              absolute
+              outline-1
+              outline-white/10
+              -outline-offset-1
+              flex
+              items-center
+              justify-center
+              px-[12.5px]
+            `}
+          />
 
-              <input
-                className={`w-full bg-transparent text-[16px] text-white outline-none placeholder:text-[16px] placeholder:font-normal placeholder:text-gray-400 ${
-                  isEnglish ? "text-left" : "text-right"
-                }`}
-                placeholder={
-                  isEnglish
-                    ? "Search Contacts"
-                    : "جستجو در تلگراف"
-                }
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          {/* Header Title */}
 
-              <button
-                type="button"
-                onClick={() => setSearch("")}
-                aria-label={
-                  isEnglish
-                    ? "Clear search"
-                    : "پاک‌کردن جست‌وجو"
-                }
-                className={`text-center text-gray-400 transition-all duration-300 ${
-                  search.length === 0
-                    ? "pointer-events-none scale-75 opacity-0"
-                    : "scale-100 opacity-100"
-                }`}
+          <span
+            className={`
+              relative
+              text-[17px]
+              -mt-[41px]
+              font-bold
+              mx-auto
+              ${headerTextClass}
+              transition-opacity
+              duration-300
+            
+            `}
+          >
+            Settings
+          </span>
+
+          {/* Header Actions */}
+
+          <div
+            className={`
+              ${
+                isOpen2
+                  ? `min-w-[160px] h-auto px-[15px] py-[10px] rounded-2xl ${
+                      isDark ? "bg-[#151515]" : "bg-[#edebeb]"
+                    }`
+                  : `w-[85px] h-[40px] rounded-3xl ${
+                      isDark ? "bg-[#151515]" : "bg-[#edebeb]"
+                    }`
+              }
+              transition-all
+              duration-100
+              ease-in-out
+              z-[50]
+              top-[14px]
+              right-[15px]
+              absolute
+              outline-1
+              outline-white/10
+              -outline-offset-1
+              flex
+              items-center
+              justify-between
+              px-[12.5px]
+              ${textPrimaryClass}
+            `}
+          >
+            {!isOpen2 && (
+              <span
+                className={`
+                  transition-opacity
+                  duration-100
+                  ${isOpen2 ? "opacity-0" : "opacity-100"}
+                  ${headerIconClass}
+                `}
               >
-                <X size={20} />
-              </button>
-            </div>
+                <SearchIcon size={20} />
+              </span>
+            )}
+
+            {!isOpen2 && (
+              <span
+                onClick={() => setIsOpen2(true)}
+                className={`
+                  transition-opacity
+                  duration-100
+                  cursor-pointer
+                  ${isOpen2 ? "opacity-0" : "opacity-100"}
+                  ${headerIconClass}
+                `}
+              >
+                <EllipsisVertical size={20} />
+              </span>
+            )}
+
+            {isOpen2 && (
+              <div
+                className={`
+                  flex
+                  gap-[10px]
+                  transition-opacity
+                  duration-100
+                  w-full
+                  ${isOpen2 ? "opacity-100" : "opacity-0"}
+                  ${textPrimaryClass}
+                `}
+              >
+                <LogOut size={22} />
+
+                <span className="tracking-wide">
+                  Log Out
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Conversation Error */}
+        {/* Header Backdrop */}
 
-        {conversationError && (
-          <div
-            role="alert"
-            className="mx-[12px] mt-[12px] rounded-xl border border-red-400/20 bg-red-500/10 px-[12px] py-[10px] text-[13px] text-red-300"
-            dir={isEnglish ? "ltr" : "rtl"}
-          >
-            {conversationError}
-          </div>
-        )}
+        <div
+          onClick={isOpen2 ? () => setIsOpen2(null) : undefined}
+          className={`
+            fixed
+            inset-0
+            z-[40]
+            ${
+              isOpen2
+                ? "panels-a-backdrop-enter"
+                : "panels-a-backdrop-exit"
+            }
+          `}
+        />
 
-        {search.length > 0 ? (
-          <div className="pt-[8px]">
-            <div className="flex w-full flex-col items-start">
-              {renderContactFeedback()}
-              {renderContactRows()}
-            </div>
+        {/* Main Content */}
 
+        <div className="relative pb-10">
+
+          {/* Conversation Error */}
+
+          {conversationError && (
             <div
-              className="mt-[15px] flex items-center justify-center"
-              dir="rtl"
+              role="alert"
+              className={`
+                mx-[12px]
+                mt-[12px]
+                rounded-xl
+                border
+                border-red-400/20
+                bg-red-500/10
+                px-[12px]
+                py-[10px]
+                text-[13px]
+                ${textSecondaryClass}
+              `}
+              dir={isEnglish ? "ltr" : "rtl"}
             >
-              {visibleContacts.length === 0 &&
-                !contactsLoading &&
-                !contactError && (
-                  <span className="text-[17px] font-medium text-gray-500">
-                    {isEnglish
-                      ? "No matching contacts found."
-                      : "مخاطبی با این نام یا شماره یافت نشد."}
-                  </span>
-                )}
+              {conversationError}
             </div>
-          </div>
-        ) : (
-          <div>
-            {/* New Group / New Channel */}
+          )}
 
-            <div
-              className={`mx-[12px] mt-[8px] overflow-hidden rounded-2xl ${palette.raised}`}
-            >
-              <button
-                type="button"
-                onClick={() => setIsGroupOpen(true)}
-                className={`flex h-[50px] w-full cursor-pointer items-center gap-[12px] px-[12px] transition-colors duration-200 hover:bg-white/[0.05] active:bg-white/10 ${rowDir}`}
-              >
-                <span className="flex h-[28px] w-[28px] items-center justify-center rounded-lg bg-[#2a96e8] text-[15px] text-white">
-                  <FontAwesomeIcon icon={faUserGroup} />
-                </span>
-
-                <span className="text-[17px] font-normal text-white">
-                  {isEnglish ? "New Group" : "گروه جدید"}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsChannelOpen(true)}
-                className={`flex h-[50px] w-full cursor-pointer items-center gap-[12px] px-[12px] transition-colors duration-200 hover:bg-white/[0.05] active:bg-white/10 ${rowDir}`}
-              >
-                <span className="flex h-[28px] w-[28px] items-center justify-center rounded-lg bg-[#3cb64a] text-[15px] text-white">
-                  <FontAwesomeIcon icon={faBullhorn} />
-                </span>
-
-                <span className="text-[17px] font-normal text-white">
-                  {isEnglish ? "New Channel" : "کانال جدید"}
-                </span>
-              </button>
-            </div>
-
-            {/* Contacts */}
-
-            <div
-              className={`mx-[12px] mt-[12px] overflow-hidden rounded-2xl pb-[6px] pt-[17px] ${palette.raised}`}
-            >
-              <div
-                className={`px-[21px] text-[14px] font-semibold leading-[22px] ${palette.accentText} ${
-                  isEnglish ? "text-left" : "text-right"
-                }`}
-              >
-                {sorted
-                  ? isEnglish
-                    ? "Sorted by name"
-                    : "مرتب شده بر اساس نام"
-                  : isEnglish
-                    ? "Sorted by last seen time"
-                    : "مرتب شده بر اساس آخرین بازدید"}
-              </div>
-
-              <div className="mt-[6px] flex w-full flex-col items-start">
+          {search.length > 0 ? (
+            <div className="pt-[8px] mt-[110px]">
+              <div className="flex w-full flex-col items-start">
                 {renderContactFeedback()}
 
                 {renderContactRows()}
+              </div>
 
-                {!contactsLoading &&
-                  !contactError &&
-                  contacts.length === 0 && (
-                    <div
-                      className="w-full px-[20px] py-[12px] text-[14px] text-gray-500"
-                      dir={isEnglish ? "ltr" : "rtl"}
+              <div
+                className="mt-[15px] flex items-center justify-center"
+                dir="rtl"
+              >
+                {visibleContacts.length === 0 &&
+                  !contactsLoading &&
+                  !contactError && (
+                    <span
+                      className={`
+                        text-[17px]
+                        font-medium
+                        ${textSecondaryClass}
+                      `}
                     >
                       {isEnglish
-                        ? "No contacts with phone numbers were found. Use the add button to create a contact."
-                        : "مخاطبی دارای شماره تلفن پیدا نشد. برای ایجاد مخاطب، دکمهٔ افزودن را انتخاب کن."}
-                    </div>
+                        ? "No matching contacts found."
+                        : "مخاطبی با این نام یا شماره یافت نشد."}
+                    </span>
                   )}
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="mt-[70px]">
+
+              {/* New Group / New Channel */}
+
+              <div
+                className={`
+                  mx-[12px]
+                  mt-[8px]
+                  overflow-hidden
+                  rounded-2xl
+                  ${back[2]}
+                `}
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsGroupOpen(true)}
+                  className={`
+                    flex
+                    h-[50px]
+                    w-full
+                    cursor-pointer
+                    items-center
+                    gap-[12px]
+                    px-[12px]
+                    transition-colors
+                    duration-200
+                    hover:bg-white/[0.05]
+                    active:bg-white/10
+                    ${rowDir}
+                  `}
+                >
+                  <span className="flex h-[28px] w-[28px] items-center justify-center rounded-lg bg-[#2a96e8] text-[15px] text-white">
+                    <FontAwesomeIcon icon={faUserGroup} />
+                  </span>
+
+                  <span
+                    className={`
+                      text-[17px]
+                      font-normal
+                      ${textPrimaryClass}
+                    `}
+                  >
+                    {isEnglish ? "New Group" : "گروه جدید"}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsChannelOpen(true)}
+                  className={`
+                    flex
+                    h-[50px]
+                    w-full
+                    cursor-pointer
+                    items-center
+                    gap-[12px]
+                    px-[12px]
+                    transition-colors
+                    duration-200
+                    hover:bg-white/[0.05]
+                    active:bg-white/10
+                    ${rowDir}
+                  `}
+                >
+                  <span className="flex h-[28px] w-[28px] items-center justify-center rounded-lg bg-[#3cb64a] text-[15px] text-white">
+                    <FontAwesomeIcon icon={faBullhorn} />
+                  </span>
+
+                  <span
+                    className={`
+                      text-[17px]
+                      font-normal
+                      ${textPrimaryClass}
+                    `}
+                  >
+                    {isEnglish ? "New Channel" : "کانال جدید"}
+                  </span>
+                </button>
+              </div>
+
+              {/* Contacts */}
+
+              <div
+                className={`
+                  mx-[12px]
+                  mt-[12px]
+                  overflow-hidden
+                  rounded-2xl
+                  pb-[6px]
+                  pt-[17px]
+                  ${back[2]}
+                `}
+              >
+                <div
+                  className={`
+                    px-[21px]
+                    text-[14px]
+                    font-semibold
+                    leading-[22px]
+                    ${accentTextClass}
+                    ${isEnglish ? "text-left" : "text-right"}
+                  `}
+                >
+                  {sorted
+                    ? isEnglish
+                      ? "Sorted by name"
+                      : "مرتب شده بر اساس نام"
+                    : isEnglish
+                      ? "Sorted by last seen time"
+                      : "مرتب شده بر اساس آخرین بازدید"}
+                </div>
+
+                <div className="mt-[6px] flex w-full flex-col items-start">
+                  {renderContactFeedback()}
+
+                  {renderContactRows()}
+
+                  {!contactsLoading &&
+                    !contactError &&
+                    contacts.length === 0 && (
+                      <div
+                        className={`
+                          w-full
+                          px-[20px]
+                          py-[12px]
+                          text-[14px]
+                          ${textSecondaryClass}
+                        `}
+                        dir={isEnglish ? "ltr" : "rtl"}
+                      >
+                        {isEnglish
+                          ? "No contacts with phone numbers were found. Use the add button to create a contact."
+                          : "مخاطبی دارای شماره تلفن پیدا نشد. برای ایجاد مخاطب، دکمهٔ افزودن را انتخاب کن."}
+                      </div>
+                    )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      
 
       {/* Add Contact Button */}
 
@@ -1207,7 +1548,7 @@ export default function NewMessage({
         language={language}
         onClick={openAddContact}
         label={isEnglish ? "New contact" : "مخاطب جدید"}
-        className={palette.accentFill}
+        className={accentFillClass}
         delay={150}
       >
         <UserPlus size={24} fill="currentColor" />
@@ -1218,7 +1559,7 @@ export default function NewMessage({
       <BottomSheet
         open={isAddContactOpen}
         onClose={closeAddContact}
-        className={palette.sheet}
+        className={back[2]}
         label={isEnglish ? "New Contact" : "مخاطب جدید"}
         onEntered={() =>
           firstNameRef.current?.focus({ preventScroll: true })
@@ -1229,7 +1570,16 @@ export default function NewMessage({
           dir={isEnglish ? "ltr" : "rtl"}
           className="px-[16px] pb-[max(16px,env(safe-area-inset-bottom))] pt-[18px]"
         >
-          <h2 className="mb-[17px] px-[5px] text-[20px] font-semibold leading-[28px] text-white">
+          <h2
+            className={`
+              mb-[17px]
+              px-[5px]
+              text-[20px]
+              font-semibold
+              leading-[28px]
+              ${textPrimaryClass}
+            `}
+          >
             {isEnglish ? "New Contact" : "مخاطب جدید"}
           </h2>
 
@@ -1255,7 +1605,15 @@ export default function NewMessage({
                 onChange={(event) =>
                   setFirstName(event.target.value)
                 }
-                className="h-full w-full bg-transparent px-[16px] text-[16px] text-white outline-none"
+                className={`
+                  h-full
+                  w-full
+                  bg-transparent
+                  px-[16px]
+                  text-[16px]
+                  ${textPrimaryClass}
+                  outline-none
+                `}
               />
             </OutlinedField>
           </div>
@@ -1280,7 +1638,15 @@ export default function NewMessage({
                 onChange={(event) =>
                   setLastName(event.target.value)
                 }
-                className="h-full w-full bg-transparent px-[16px] text-[16px] text-white outline-none"
+                className={`
+                  h-full
+                  w-full
+                  bg-transparent
+                  px-[16px]
+                  text-[16px]
+                  ${textPrimaryClass}
+                  outline-none
+                `}
               />
             </OutlinedField>
           </div>
@@ -1309,7 +1675,16 @@ export default function NewMessage({
                 type="tel"
                 value={countryCode}
                 onChange={handleCountryCodeChange}
-                className="h-full w-[105px] shrink-0 bg-transparent text-center text-[16px] text-white outline-none"
+                className={`
+                  h-full
+                  w-[105px]
+                  shrink-0
+                  bg-transparent
+                  text-center
+                  text-[16px]
+                  ${textPrimaryClass}
+                  outline-none
+                `}
               />
 
               <span className="h-[20px] w-px shrink-0 bg-white/25" />
@@ -1322,10 +1697,22 @@ export default function NewMessage({
                 maxLength={20}
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
-                className="h-full min-w-0 flex-1 bg-transparent px-[14px] text-left text-[16px] text-white outline-none"
+                className={`
+                  h-full
+                  min-w-0
+                  flex-1
+                  bg-transparent
+                  px-[14px]
+                  text-left
+                  text-[16px]
+                  ${textPrimaryClass}
+                  outline-none
+                `}
               />
             </div>
           </OutlinedField>
+
+          {/* Sync Contact */}
 
           <button
             type="button"
@@ -1334,21 +1721,49 @@ export default function NewMessage({
             onClick={() =>
               setSyncToPhone((previous) => !previous)
             }
-            className="mt-[6px] flex h-[40px] w-full cursor-pointer items-center gap-[10px] px-[13px] text-start"
+            className="
+              mt-[6px]
+              flex
+              h-[40px]
+              w-full
+              cursor-pointer
+              items-center
+              gap-[10px]
+              px-[13px]
+              text-start
+            "
           >
             <span
-              className={`flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border-[1.5px] text-white transition-colors duration-150 ${
-                syncToPhone
-                  ? `border-transparent ${palette.accentFill}`
-                  : "border-white/45"
-              }`}
+              className={`
+                flex
+                h-[20px]
+                w-[20px]
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                border-[1.5px]
+                text-white
+                transition-colors
+                duration-150
+                ${
+                  syncToPhone
+                    ? `border-transparent ${accentFillClass}`
+                    : "border-white/45"
+                }
+              `}
             >
               {syncToPhone && (
                 <Check size={13} strokeWidth={3} />
               )}
             </span>
 
-            <span className="text-[16px] text-white">
+            <span
+              className={`
+                text-[16px]
+                ${textPrimaryClass}
+              `}
+            >
               {isEnglish
                 ? "Sync Contact to Phone"
                 : "همگام‌سازی مخاطب با گوشی"}
@@ -1357,10 +1772,24 @@ export default function NewMessage({
 
           <div className="mt-[21px] h-px w-full bg-white/10" />
 
+          {/* Add via QR */}
+
           <button
             type="button"
             onClick={handleAddViaQr}
-            className={`mt-[9px] flex h-[40px] w-full cursor-pointer items-center justify-center gap-[10px] text-[16px] font-medium ${palette.accentText}`}
+            className={`
+              mt-[9px]
+              flex
+              h-[40px]
+              w-full
+              cursor-pointer
+              items-center
+              justify-center
+              gap-[10px]
+              text-[16px]
+              font-medium
+              ${accentTextClass}
+            `}
           >
             <QrCode size={21} />
 
@@ -1374,16 +1803,44 @@ export default function NewMessage({
           {addContactError && (
             <div
               role="alert"
-              className="mt-[10px] rounded-xl bg-red-500/10 px-[12px] py-[10px] text-[13px] text-red-300"
+              className={`
+                mt-[10px]
+                rounded-xl
+                bg-red-500/10
+                px-[12px]
+                py-[10px]
+                text-[13px]
+                ${textSecondaryClass}
+              `}
             >
               {addContactError}
             </div>
           )}
 
+          {/* Submit */}
+
           <button
             type="submit"
             disabled={contactSaving}
-            className={`mt-[17px] flex h-[48px] w-full cursor-pointer items-center justify-center gap-[8px] rounded-full text-[16px] font-semibold text-white transition-[opacity,transform] duration-150 active:scale-[0.98] disabled:opacity-60 ${palette.accentFill}`}
+            className={`
+              mt-[17px]
+              flex
+              h-[48px]
+              w-full
+              cursor-pointer
+              items-center
+              justify-center
+              gap-[8px]
+              rounded-full
+              text-[16px]
+              font-semibold
+              text-white
+              transition-[opacity,transform]
+              duration-150
+              active:scale-[0.98]
+              disabled:opacity-60
+              ${accentFillClass}
+            `}
           >
             {contactSaving ? (
               <>
@@ -1409,7 +1866,7 @@ export default function NewMessage({
       <SlidePage
         open={isChannelOpen}
         from={slideFrom}
-        background={palette.pageHex}
+        background={pageHex}
       >
         <NewChannel
           type="channel"
@@ -1426,7 +1883,7 @@ export default function NewMessage({
       <SlidePage
         open={isGroupOpen}
         from={slideFrom}
-        background={palette.pageHex}
+        background={pageHex}
       >
         <NewGroup
           setActiveA={setActiveA}
@@ -1437,6 +1894,12 @@ export default function NewMessage({
           onCreateGroup={handleCreateGroup}
         />
       </SlidePage>
+
+
+</div>
+
+
+      
     </>
   );
 }
