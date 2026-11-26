@@ -28,7 +28,8 @@ export default function ChatSettings({
   setIsDark,
   language,
   isB,
-  setIsS
+  setIsS,
+  setDes
 }) {
   const { back } = useAppTheme();
 
@@ -465,7 +466,7 @@ export default function ChatSettings({
         />
       
         <div
-        onClick={()=>{isB && setActiveB(null); setIsS(false)}}
+        onClick={()=>{setDes(null); setIsS(false)}}
           className={`
            w-[40px] h-[40px] rounded-full ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}
             z-[50] top-[14px] left-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-center px-[12.5px]`}

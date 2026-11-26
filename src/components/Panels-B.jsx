@@ -290,7 +290,9 @@ export default function PanelsB({
     isHidden,
     setIsHidden,
     isAt, 
-    setIsAt
+    setIsAt,
+    des, 
+    setDes
   } = useB();
 
   const {
@@ -1326,12 +1328,14 @@ export default function PanelsB({
         
             w-full
           
-            overflow-hidden
-            max-md:transition-all
-            duration-initial
-            ease-in-out
+             overflow-hidden
+max-md:transform-gpu
+    max-md:will-change-transform
+    max-md:transition-[transform,opacity]
+    duration-300
+    max-md:ease-[cubic-bezier(0.22,1,0.36,1)]
 
-            ${isHidden ? "opacity-0 invisible" : ""}
+            
             ${
               isOpen2 
                 ? "max-md:translate-x-0 max-md:opacity-100"
@@ -1395,7 +1399,9 @@ export default function PanelsB({
               isB={isB}
                 theme={theme}
                  setIsOpen2={setIsOpen2}
+                setTheme={setTheme}
                 isDark={isDark}
+                setIsDark={setIsDark}
                 language={language}
                 setActiveB={setActiveB}
               />

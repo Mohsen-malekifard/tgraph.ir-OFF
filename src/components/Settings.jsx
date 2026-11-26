@@ -37,6 +37,8 @@ export default function Settings({
   isS,
   setIsS,
   activeB,
+  des,
+  setDes
 }) {
   const [isScrolled3, setIsScrolled3] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -118,13 +120,13 @@ export default function Settings({
     duration-300
     ease-[cubic-bezier(0.22,1,0.36,1)]
     ${
-      isS
+      des
         ? "opacity-100 pointer-events-auto"
         : "opacity-0 pointer-events-none"
     }
   `}
   style={{
-    transform: isS
+    transform: des
       ? "translateX(0)"
       : "translateX(100%)",
   }}
@@ -132,7 +134,7 @@ export default function Settings({
   <ChatSettings
   isB={isB}
     theme={theme}
-                
+                setDes={setDes}
                 setTheme={setTheme}
                 isDark={isDark}
                 setIsDark={setIsDark}
@@ -307,7 +309,7 @@ export default function Settings({
             className={`mx-[15px] mt-[15px] box-border flex h-auto max-w-full flex-col items-start rounded-2xl ${panelBackgroundClass} py-[7px] transition-colors duration-200`}
           >
             <div
-              onClick={() => setActiveB("account-s-a")}
+              onClick={() => setActiveB("account")}
               className={`flex h-[57px] w-full cursor-pointer items-center gap-[17px] px-[20px] ${
                 language == "english" ? "flex-row" : "flex-row-reverse"
               }`}
@@ -338,7 +340,7 @@ export default function Settings({
             </div>
 
             <div
-              onClick={() => setIsS(true)}
+              onClick={() => setDes("chat-settings")}
               className={`flex h-[57px] w-full cursor-pointer items-center gap-[17px] px-[20px] ${
                 language == "english" ? "flex-row" : "flex-row-reverse"
               }`}

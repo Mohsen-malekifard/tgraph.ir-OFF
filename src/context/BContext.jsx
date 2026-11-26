@@ -6,6 +6,7 @@ const BContext = createContext();
 
 export function BProvider({ children }) {
   const [activeB, setActiveB] = useState(null);
+  const [des, setDes] = useState(null);
   const [isOpen2, setIsOpen2] = useState(false);
   const [isHidden, setIsHidden] = useState(true);
 
@@ -17,7 +18,9 @@ export function BProvider({ children }) {
         isOpen2,
         setIsOpen2,
         isHidden,
-        setIsHidden
+        setIsHidden,
+        des,
+        setDes
       }}
     >
       {children}

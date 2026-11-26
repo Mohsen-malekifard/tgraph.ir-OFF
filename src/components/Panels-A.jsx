@@ -17,7 +17,7 @@ import NewGroup_T_A from "./NewGroup-T-A";
 import ChatSettings from "./ChatSettings-S-A";
 
 export default function PanelsA() {
-  const { activeA, setActiveA, isS, setIsS } = useA();
+  const { activeA, setActiveA, isS, setIsS, des, setDes } = useA();
   const { language } = useData();
   const { theme, isDark, setTheme, setIsDark } = useTheme();
 
@@ -200,6 +200,8 @@ export default function PanelsA() {
 
             {activeA === "settings" && (
               <Settings
+              des={des}
+              setDes={setDes}
               setTheme={setTheme}
               setIsDark={setIsDark}
                 theme={theme}

@@ -11,7 +11,16 @@ import {
   faCakeCandles,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function Account({ setActiveB, language, theme, isDark, isB }) {
+export default function Account({ activeB,
+  setActiveB,
+  theme,
+  setTheme,
+  isDark,
+  setIsDark,
+  language,
+  isB,
+  setIsS,
+  setDes}) {
   const { name, lastName, bio } = useData();
   const {back} = useTheme();
   const [newName, setNewName] = useState(name);
@@ -19,6 +28,7 @@ export default function Account({ setActiveB, language, theme, isDark, isB }) {
   const [newBio, setNewBio] = useState(bio);
   const [divide, setDevide] = useState(70);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
 
   const isEnglish = language === "english";
@@ -80,96 +90,167 @@ export default function Account({ setActiveB, language, theme, isDark, isB }) {
     ? "text-white"
     : "text-[#252525]";
 
+    const handleScroll = (e) => {
+    setIsScrolled(e.currentTarget.scrollTop > 10);
+  };
+
+  const pageBackgroundColor =
+    back[1];
+
+  const panelBackgroundColor =
+    back[2];
+
+    const menuTextClass = isDark
+    ? "text-white"
+    : "text-[#252525]";
+
+  /*
+  |--------------------------------------------------------------------------
+  | Render
+  |--------------------------------------------------------------------------
+  */
+
   return (
     <div
-      onScroll={(e) => {
-        setIsScrolled(e.currentTarget.scrollTop > 10);
-      }}
-      className={`h-screen w-full overflow-y-scroll overflow-x-hidden ${back[1]}`}
+      onScroll={handleScroll}
+      className={`
+        relative
+        ${pageBackgroundColor}
+        h-screen
+        w-full
+        min-w-0
+        max-w-full
+        overflow-x-hidden
+        overflow-y-auto
+        overscroll-contain
+        pb-[200px]
+        transition-colors
+        duration-200
+      `}
     >
-       {/* Header */}
+      {/* Overlay */}
+
+     
+
+      {/* Menu */}
+
+      <div
+  
+        className={`${panelBackgroundColor} fixed ${
+          language == "english"
+            ? "right-[20px] origin-top-right"
+            : "left-[20px] origin-top-left"
+        } top-[62px] z-[50] flex w-[200px] flex-col gap-[25px] rounded-[5px] px-[12.5px] py-[12.5px] shadow-lg ring-1 ring-black/[0.06] transition-all duration-200 ease-out ${
+          isOpen
+            ? "pointer-events-auto translate-x-0 translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none translate-x-[-10px] translate-y-[10px] scale-0 opacity-0"
+        }`}
+      >
+        <div
+          onClick={() => setIsOpen(false)}
+          className={`flex cursor-pointer gap-[10px] ${menuTextClass}`}
+        >
+          <span className={accentTextClass}>
+            <LogOut size={22.5} />
+          </span>
+
+          <span>Log Out</span>
+        </div>
+      </div>
+
+      {/* Header */}
+
+      <div className={`fixed ${isB ? "w-3/3 min-md:w-2/3" : "w-3/3"} h-[110px] z-[40] flex items-center justify-between px-[15px] ${headerTextClass}`}>
+        {/* Layer 1: soft blur across the whole header */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 backdrop-blur-[7px] transition-opacity duration-300 ease-out ${
+            isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
+          }}
+        />
       
-            <div className={`fixed ${isB ? "w-3/3 min-md:w-2/3" : "w-3/3"} h-[110px] z-[40] flex items-center justify-between px-[15px] ${headerTextClass}`}>
-              {/* Layer 1: soft blur across the whole header */}
-              <div
-                aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 backdrop-blur-[7px] transition-opacity duration-300 ease-out ${
-                  isScrolled ? "opacity-100" : "opacity-0"
-                }`}
-                style={{
-                  WebkitMaskImage:
-                    "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
-                  maskImage:
-                    "linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%)",
-                }}
-              />
-            
-              {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
-              <div
-                aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 backdrop-blur-[3.5px] transition-opacity duration-300 ease-out ${
-                  isScrolled ? "opacity-100" : "opacity-0"
-                }`}
-                style={{
-                  WebkitMaskImage:
-                    "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
-                  maskImage:
-                    "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
-                }}
-              />
-            
-              {/* Layer 3: dark (or white in light mode) gradient on top of the blur */}
-              <div
-                aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-linear-to-b transition-opacity duration-300 ease-out ${
-                  isDark
-                    ? "from-[#000]/55 via-[#000]/20"
-                    : "from-[#ffffff]/55 via-[#ffffff]/20"
-                } to-transparent ${
-                  isScrolled ? "opacity-100" : "opacity-0"
-                }`}
-              />
-            
-              <div
-              onClick={()=>setActiveB(null)}
-                className={`
-                 w-[40px] h-[40px] rounded-full ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}
-                  z-[50] top-[14px] left-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-center px-[12.5px]`}
-              />
-            
-              <span className={`relative text-[17px] -mt-[41px] font-bold mx-auto `}>
-                Account
-              </span>
-            
-              <div
-                className={`${
-                  isOpen2 == true ? ` min-w-[160px] h-auto px-[15px] py-[10px] rounded-2xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"} ` : `w-[85px] h-[40px] rounded-3xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}`
-                } transition-all duration-100 ease-in-out z-[50] top-[14px] right-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
-              >
-                {!isOpen2 && <span
-                  className={`transition-opacity duration-100 ${
-                    isOpen2 ? "opacity-0" : "opacity-100"
-                  } `}
-                >
-                  <SearchIcon size={20} />
-                </span>}
-            
-                {!isOpen2 && <span
-                  onClick={() => setIsOpen2(true)}
-                  className={`transition-opacity duration-100 ${
-                    isOpen2 ? "opacity-0" : "opacity-100"
-                  } `}
-                >
-                  <EllipsisVertical size={20} />
-                </span>}
-            
-                {isOpen2 && <div className={`flex gap-[10px] transition-opacity duration-100 w-full ${isOpen2 ? "opacity-100" : "opacity-0"} `} >
-                     <LogOut size={22}/>
-                     <span className="tracking-wide">Log Out</span>
-                </div>}
-              </div>
-            </div>
-<div className="mt-[80px]">
+        {/* Layer 2: stronger blur at the top, fading out toward the bottom */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 backdrop-blur-[3.5px] transition-opacity duration-300 ease-out ${
+            isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+            maskImage:
+              "linear-gradient(to bottom, #000 0%, #000 35%, transparent 75%)",
+          }}
+        />
+      
+        {/* Layer 3: dark (or white in light mode) gradient on top of the blur */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 bg-linear-to-b transition-opacity duration-300 ease-out ${
+            isDark
+              ? "from-[#000]/55 via-[#000]/20"
+              : "from-[#ffffff]/55 via-[#ffffff]/20"
+          } to-transparent ${
+            isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      
+        <div
+        onClick={()=>{setDes(null); setIsS(false)}}
+          className={`
+           w-[40px] h-[40px] rounded-full ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}
+            z-[50] top-[14px] left-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-center px-[12.5px]`}
+        />
+      
+        <span className={`relative text-[17px] -mt-[41px] font-bold mx-auto `}>
+          Account
+        </span>
+      
+        <div
+          className={`${
+            isOpen2 == true ? ` min-w-[160px] h-auto px-[15px] py-[10px] rounded-2xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"} ` : `w-[85px] h-[40px] rounded-3xl ${isDark ? "bg-[#151515]" : "bg-[#edebeb]"}`
+          } transition-all duration-100 ease-in-out z-[50] top-[14px] right-[15px] absolute outline-1 outline-white/10 -outline-offset-1 flex items-center justify-between px-[12.5px]`}
+        >
+          {!isOpen2 && <span
+            className={`transition-opacity duration-100 ${
+              isOpen2 ? "opacity-0" : "opacity-100"
+            } `}
+          >
+            <SearchIcon size={20} />
+          </span>}
+      
+          {!isOpen2 && <span
+            onClick={() => setIsOpen2(true)}
+            className={`transition-opacity duration-100 ${
+              isOpen2 ? "opacity-0" : "opacity-100"
+            } `}
+          >
+            <EllipsisVertical size={20} />
+          </span>}
+      
+          {isOpen2 && <div className={`flex gap-[10px] transition-opacity duration-100 w-full ${isOpen2 ? "opacity-100" : "opacity-0"} `} >
+               <LogOut size={22}/>
+               <span className="tracking-wide">Log Out</span>
+          </div>}
+        </div>
+      </div>
+
+      <div
+            onClick={isOpen2 ? () => setIsOpen2(null) : undefined}
+            className={`fixed inset-0 z-[40] ${
+              isOpen2 ? "panels-a-backdrop-enter" : "panels-a-backdrop-exit"
+            }`}
+          />
+
+      {/* Settings Content */}
+
+     <div className="mt-[80px]">
       {/* Name */}
       <div
         className={`
@@ -573,6 +654,8 @@ export default function Account({ setActiveB, language, theme, isDark, isB }) {
         </button>
       </div>
     </div>
+
+      
     </div>
   );
 }

@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ChatSettings from "@/components/ChatSettings";
+import Account from "@/components/Account";
 
 import {
   byPrefixAndName,
@@ -531,7 +533,7 @@ function formatContactItem(user) {
 }
 
 export default function Home() {
-  const { activeB, setActiveB } = useB();
+  const { activeB, setActiveB, des, setDes } = useB();
   const { activeA, setActiveA, setIsS, isS } = useA();
   const { setActivePV } = usePV();
   const { theme, setTheme, isDark, setIsDark, back, fore } = useTheme();
@@ -1398,6 +1400,56 @@ const filteredChats = useMemo(() => {
     data-performance={lowPerformanceMode ? "low" : "normal"}
     className="contents"
   >
+
+     <div
+  className={`
+    fixed
+    right-0
+    min-md:w-2/3
+    max-md:inset-x-0
+    z-[70]
+    h-screen
+    overflow-hidden
+    max-md:transform-gpu
+    max-md:will-change-transform
+    max-md:transition-[transform,opacity]
+    max-md:duration-300
+    max-md:ease-[cubic-bezier(0.22,1,0.36,1)]
+    ${
+      des
+        ? "opacity-100 pointer-events-auto"
+        : "opacity-0 pointer-events-none"
+    }
+  `}
+  style={{
+    transform: des
+      ? "translateX(0)"
+      : "translateX(100%)",
+  }}
+>
+  {des == "chat-settings" && (<ChatSettings
+
+    theme={theme}
+                setDes={setDes}
+                setTheme={setTheme}
+                isDark={isDark}
+                setIsDark={setIsDark}
+                language={language}
+                setActiveB={setActiveB}
+              
+  />)}
+
+  {des == "account" && (<Account
+            setDes={setDes}
+                theme={theme}
+                 setIsOpen2={setIsOpen2}
+                setTheme={setTheme}
+                isDark={isDark}
+                setIsDark={setIsDark}
+                language={language}
+                setActiveB={setActiveB}
+              />)}
+</div>
     <PanelsA />
 
     <PanelsPV data={selectedData} />
@@ -2175,6 +2227,7 @@ const filteredChats = useMemo(() => {
 
                 {activeCategory2 == 2 && (
                   <div className={`  relative pb-10`}>
+                   
                     {isOpen && (
                       <div
                         onClick={() => setIsOpen(false)}
@@ -2244,7 +2297,7 @@ const filteredChats = useMemo(() => {
                       } max-w-full rounded-2xl h-auto py-[7px] flex flex-col items-start mt-[15px] mx-[15px] box-border`}
                     >
                       <div
-                        onClick={() => setActiveB("account")}
+                        onClick={() => setDes("account")}
                         className={`flex ${
                           language == "english"
                             ? "flex-row"
@@ -2279,7 +2332,7 @@ const filteredChats = useMemo(() => {
                       </div>
 
                       <div
-                        onClick={() => setActiveB("chat-settings")}
+                        onClick={() => setDes("chat-settings")}
                         className={`flex ${
                           language == "english"
                             ? "flex-row"

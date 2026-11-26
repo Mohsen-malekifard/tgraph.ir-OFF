@@ -7,6 +7,7 @@ const AContext = createContext();
 export function AProvider({ children }) {
   const [activeA, setActiveA] = useState(null);
   const [isS, setIsS] = useState(false);
+  const [des, setDes] = useState(null);
 
   return (
     <AContext.Provider
@@ -14,7 +15,9 @@ export function AProvider({ children }) {
         activeA,
         setActiveA,
         isS,
-        setIsS
+        setIsS,
+        des,
+        setDes
       }}
     >
       {children}
