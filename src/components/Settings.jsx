@@ -26,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import ChatSettings from "./ChatSettings";
+import Account from "./Account";
 
 export default function Settings({
   setActiveB,
@@ -42,6 +43,7 @@ export default function Settings({
 }) {
   const [isScrolled3, setIsScrolled3] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   const isB = false;
 
   const isBlueTheme = theme === "blue";
@@ -102,6 +104,8 @@ export default function Settings({
       ? "text-[#64748b]"
       : "text-[#936565]";
 
+      
+
   return (
     <>
       {/* Chat Settings - Sliding Panel */}
@@ -131,8 +135,8 @@ export default function Settings({
       : "translateX(100%)",
   }}
 >
-  <ChatSettings
-  isB={isB}
+  {des == "chat-settings" && (<ChatSettings
+
     theme={theme}
                 setDes={setDes}
                 setTheme={setTheme}
@@ -140,8 +144,19 @@ export default function Settings({
                 setIsDark={setIsDark}
                 language={language}
                 setActiveB={setActiveB}
-                setIsS={setIsS}
-  />
+              
+  />)}
+
+   {des == "account" && (<Account
+            setDes={setDes}
+                theme={theme}
+                 setIsOpen2={setIsOpen2}
+                setTheme={setTheme}
+                isDark={isDark}
+                setIsDark={setIsDark}
+                language={language}
+                setActiveB={setActiveB}
+              />)}
 </div>
 
       <div
@@ -309,7 +324,7 @@ export default function Settings({
             className={`mx-[15px] mt-[15px] box-border flex h-auto max-w-full flex-col items-start rounded-2xl ${panelBackgroundClass} py-[7px] transition-colors duration-200`}
           >
             <div
-              onClick={() => setActiveB("account")}
+              onClick={() => setDes("account")}
               className={`flex h-[57px] w-full cursor-pointer items-center gap-[17px] px-[20px] ${
                 language == "english" ? "flex-row" : "flex-row-reverse"
               }`}

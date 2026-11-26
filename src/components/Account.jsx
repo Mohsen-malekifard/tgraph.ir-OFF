@@ -280,7 +280,7 @@ export default function Account({ activeB,
             maxLength={35}
             required
             type="text"
-            autoFocus
+            
             autoComplete="off"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}

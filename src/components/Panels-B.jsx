@@ -1394,18 +1394,6 @@ max-md:transform-gpu
                   : ""
             }`}
           >
-            {activeB === "account" && (
-              <Account
-              isB={isB}
-                theme={theme}
-                 setIsOpen2={setIsOpen2}
-                setTheme={setTheme}
-                isDark={isDark}
-                setIsDark={setIsDark}
-                language={language}
-                setActiveB={setActiveB}
-              />
-            )}
 
             {activeB === "username" && (
               <Username
@@ -1417,18 +1405,7 @@ max-md:transform-gpu
               />
             )}
 
-            {activeB === "chat-settings" && (
-              <ChatSettings
-              isB={isB}
-                theme={theme}
-                 setIsOpen2={setIsOpen2}
-                setTheme={setTheme}
-                isDark={isDark}
-                setIsDark={setIsDark}
-                language={language}
-                setActiveB={setActiveB}
-              />
-            )}
+          
           </div>
         </div>
 

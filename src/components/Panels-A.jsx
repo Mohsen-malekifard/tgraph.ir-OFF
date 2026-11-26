@@ -180,14 +180,7 @@ export default function PanelsA() {
               />
             )}
 
-            {activeA === "account" && (
-              <Account
-                theme={theme}
-                isDark={isDark}
-                language={language}
-                setActiveB={setActiveA}
-              />
-            )}
+          
 
             {activeA === "account-s-a" && (
               <Account_S_A
